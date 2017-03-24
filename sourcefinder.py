@@ -126,16 +126,26 @@ class Transmitter:
         #TODO: Make line width (or density) proportional to magnitude.
         #plt.quiver(X, Y, xfield, yfield)#, linewidth=0.5)
         plt.streamplot(X, Y, xfield, yfield)
-        
+
         #plt.show()
+
 class Point:
-    error = 0
     def __init__(self, xvalue, yvalue):
         self.x = xvalue
         self.y = yvalue
+        self.error = []
 
-    def setError(self, e):
-        self.error = e
+    def setError(self, e, degree):
+        # for i in range(0, len(self.error)):
+        #     d = self.error[i][1]
+        #     if d == degree:
+        #         self.error[i][0] = error
+        # for e,d in self.error:
+        #     if d == degree:
+
+        #     else:
+        self.error.append((e, degree))
+
 
 searchx = []
 searchy = []
@@ -226,10 +236,10 @@ class Searcher:
         return self.location
 
     #updates the bestGuess array to hold transmitter locations in order
-    def storeGuess(self, error, p):
+    def storeGuess(self, error, p, degree):
         #append if list is too short
-        errorList.append((error,p))
-        p.setError(error)
+        errorList.append((error, p, degree))
+        p.setError(error, degree)
         count = len(bestGuess)
         if count < 4:
             bestGuess.append((error, p))
@@ -259,51 +269,48 @@ class Searcher:
 
         pointsList = []
         slopeList = []
+        mList = []
+        bList = []
 
         for px in pixelX:
             for py in pixelY:
                 pointsList.append(Point(px, py))
 
-        if visualize:
-            t.plot_field(xlim = (-2, 2), ylim = (-1, 1), n = 100)
-
         for i in range(steps):
-            #print 
-            #print i
-            #print 
+            # print 
+            # print i
+            # print 
             del bestGuess[:]
-            if visualize:
-                (x, y, z) = self.location
-                searchx.append(x)
-                searchy.append(y)
-                r.append(self.distance_from_transmitter())
-                plt.annotate("x", (x, y))                
+            (x, y, z) = self.location
+            searchx.append(x)
+            searchy.append(y)
+            r.append(self.distance_from_transmitter())
+        
+            if (i > 0):
+                #solve for the slope
+                slope = (y-searchy[i-1])/(x-searchx[i-1])
+                slopeList.append(slope)
 
-                if (i > 0):
-                    #solve for the slope
-                    slope = (y-searchy[i-1])/(x-searchx[i-1])
-                    slopeList.append(slope)
+                #find the perpendicular line constants
+                m = -1.0/slope
+                b = searchy[i-1] - m*searchx[i-1]
 
-                    #find the perpendicular line constants
-                    m = -1.0/slope
-                    b = searchy[i-1] - m*searchx[i-1]
+                #check which side the current point is on
+                nexty = y
+                eqn = m*x + b
 
-                    #check which side the current point is on
-                    nexty = y
-                    eqn = m*x + b
-
-                    xarray = np.arange(x_lower_bound, x_upper_bound, .1)
-                    yarray = np.zeros(len(xarray))
-                    yarray = m*xarray + b 
-                    plt.plot(xarray, yarray)
-                    plt.draw()
-                    tempList = []
-                    for p in pointsList:
-                        #check if the point is on the wrong side of the line
-                        if ((nexty > eqn and p.y > m*p.x + b) or 
-                            (nexty < eqn and p.y < m*p.x + b)):
-                            tempList.append(p)
-                            test = Transmitter(1, location=np.array([p.x, p.y, 0]))
+                mList.append(m)
+                bList.append(b)
+                
+                tempList = []
+                for p in pointsList:
+                    #check if the point is on the wrong side of the line
+                    del p.error[:]
+                    if ((nexty > eqn and p.y > m*p.x + b) or 
+                        (nexty < eqn and p.y < m*p.x + b)):
+                        tempList.append(p)
+                        for degree in range(0, 90, 5):
+                            test = Transmitter(1, location=np.array([p.x, p.y, 0]), theta=degree)
                             error = 0
                             for k in range(1, len(slopeList)):
                                 #location is the searchx and searchy
@@ -321,35 +328,59 @@ class Searcher:
                                 #error += abs(slopeList[k] - testslope)
 
                             if (i > 1):
-                                self.storeGuess(error, p)
+                                self.storeGuess(error, p, degree)
                                 #print ("x: %.4f, y: %.4f, error: %.2f" % (p.x, p.y, error))
 
-                    pointsList = tempList
+                pointsList = tempList
             if self.distance_from_transmitter() < radius:
                 break
 
             self.step(stepsize = stepsize)
+        
+        avgx = 0
+        avgy = 0        
+        for e,p in bestGuess:
+            avgx += p.x
+            avgy += p.y
+        xguess = avgx/len(bestGuess)
+        yguess = avgy/len(bestGuess)
+        print("Source guess: %.2f, %.2f" % (xguess,yguess))
 
+        #draws the plot
         if visualize:
+            t.plot_field(xlim = (-2, 2), ylim = (-1, 1), n = 100)
+            #draw search path
+            for x,y in zip(searchx, searchy):    
+                plt.annotate("x", (x, y))
+
+            #add perpendicular lines  
+            for m,b in zip(mList, bList):
+                xarray = np.arange(x_lower_bound, x_upper_bound, .1)
+                yarray = np.zeros(len(xarray))
+                yarray = m*xarray + b 
+                plt.plot(xarray, yarray)
+                plt.draw()
+
+            #draw the points with fontsize modulated by magnitude of the error
             for p in pointsList:
-                if (p.error > 6):
+                e,d = zip(*p.error)
+                x = min(e)
+                if (x > 6):
                     size = 30
                 else: 
-                    size = (p.error * 5)
+                    size = (x * 5)
                 plt.annotate(".", (p.x, p.y), fontsize = size)
                 #print ("x: %.4f, y: %.4f, error: %.2f" % (p.x, p.y, p.error))
-            avgx = 0
-            avgy = 0
+
+            #draws the top 4 guesses and places the source at their average
             for e,p in bestGuess:
-                avgx += p.x
-                avgy += p.y
                 plt.annotate("*", (p.x, p.y))
-            plt.annotate("o", ((avgx/len(bestGuess)),(avgy/len(bestGuess))))
-            print("Source guess: %.2f, %.2f" %((avgx/len(bestGuess),(avgy/len(bestGuess)))))
+            plt.annotate("o", (xguess, yguess))
 
-            plt.draw()
+            plt.xlim([x_lower_bound, x_upper_bound])
+            plt.ylim([y_lower_bound, y_upper_bound])
 
-        #print slopeList
+
 
         return self.location
 
@@ -499,7 +530,7 @@ y_upper_bound = 1
 y_lower_bound = -1
 
 # Define a transmitter
-t = Transmitter(1, location=np.array([0, 0, 0]))
+t = Transmitter(1, location=np.array([.5, .2, 0]), theta=25)
 
 #Determine random starting location for searcher
 startx = random.random()*4 - 2 #prolbem with x: .3949 y: -.0701
@@ -514,12 +545,10 @@ s = Searcher(t, l)
 # Perform a search
 s.advancedSearch(.3, .1, 5, True)
 
-plt.xlim([x_lower_bound, x_upper_bound])
-plt.ylim([y_lower_bound, y_upper_bound])
 
 errorList.sort(key=lambda t: t[0]) 
-#for e,p in errorList:
-#    print ("x: %.4f, y: %.4f, error: %.2f" % (p.x, p.y, e))
+for e,p,d in errorList:
+    print ("x: %.4f, y: %.4f, error: %.2f, degree: %d" % (p.x, p.y, e, d))
 
 
 
