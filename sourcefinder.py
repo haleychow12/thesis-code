@@ -277,9 +277,6 @@ class Searcher:
                 pointsList.append(Point(px, py))
 
         for i in range(steps):
-            # print 
-            # print i
-            # print 
             del bestGuess[:]
             (x, y, z) = self.location
             searchx.append(x)
@@ -316,16 +313,14 @@ class Searcher:
                                 #location is the searchx and searchy
                                 location = np.array([searchx[k], searchy[k], 0])
                                 (testx, testy, testz) = test.field(location)
+                                
                                 #find the distance between test and search location k
                                 testr = np.linalg.norm(test.location - location)
-                                #print testr
-
                                 testslope = testy/testx
                                 
                                 #need to compare testy/testx with slope at last location
                                 #using RMSE 
                                 error += math.sqrt((slopeList[k] - testslope)**2 + (r[k] - testr)**2)
-                                #error += abs(slopeList[k] - testslope)
 
                             if (i > 1):
                                 self.storeGuess(error, p, degree)
@@ -348,37 +343,42 @@ class Searcher:
 
         #draws the plot
         if visualize:
-            t.plot_field(xlim = (-2, 2), ylim = (-1, 1), n = 100)
-            #draw search path
-            for x,y in zip(searchx, searchy):    
-                plt.annotate("x", (x, y))
+            for count in range(0, 18):
+                t.theta = count*5
+                t.plot_field(xlim = (-2, 2), ylim = (-1, 1), n = 100)
+                #draw search path
+                for x,y in zip(searchx, searchy):    
+                    plt.annotate("x", (x, y))
 
-            #add perpendicular lines  
-            for m,b in zip(mList, bList):
-                xarray = np.arange(x_lower_bound, x_upper_bound, .1)
-                yarray = np.zeros(len(xarray))
-                yarray = m*xarray + b 
-                plt.plot(xarray, yarray)
-                plt.draw()
+                #add perpendicular lines  
+                for m,b in zip(mList, bList):
+                    xarray = np.arange(x_lower_bound, x_upper_bound, .1)
+                    yarray = np.zeros(len(xarray))
+                    yarray = m*xarray + b 
+                    plt.plot(xarray, yarray)
+                    plt.draw()
 
-            #draw the points with fontsize modulated by magnitude of the error
-            for p in pointsList:
-                e,d = zip(*p.error)
-                x = min(e)
-                if (x > 6):
-                    size = 30
-                else: 
-                    size = (x * 5)
-                plt.annotate(".", (p.x, p.y), fontsize = size)
-                #print ("x: %.4f, y: %.4f, error: %.2f" % (p.x, p.y, p.error))
+                #draw the points with fontsize modulated by magnitude of the error
+                for p in pointsList:
+                    e,d = zip(*p.error)
+                    #x = min(e)
+                    x = e[count]
+                    if (x > 6):
+                        size = 30
+                    else: 
+                        size = (x * 5)
+                    plt.annotate(".", (p.x, p.y), fontsize = size)
+                    #print ("x: %.4f, y: %.4f, error: %.2f" % (p.x, p.y, p.error))
 
-            #draws the top 4 guesses and places the source at their average
-            for e,p in bestGuess:
-                plt.annotate("*", (p.x, p.y))
-            plt.annotate("o", (xguess, yguess))
+                #draws the top 4 guesses and places the source at their average
+                for e,p in bestGuess:
+                    plt.annotate("*", (p.x, p.y))
+                plt.annotate("o", (xguess, yguess))
 
-            plt.xlim([x_lower_bound, x_upper_bound])
-            plt.ylim([y_lower_bound, y_upper_bound])
+                plt.xlim([x_lower_bound, x_upper_bound])
+                plt.ylim([y_lower_bound, y_upper_bound])
+
+                plt.show()
 
 
 
