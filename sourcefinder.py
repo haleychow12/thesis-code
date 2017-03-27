@@ -303,28 +303,28 @@ class Searcher:
                 for p in pointsList:
                     #check if the point is on the wrong side of the line
                     del p.error[:]
-                    if ((nexty > eqn and p.y > m*p.x + b) or 
-                        (nexty < eqn and p.y < m*p.x + b)):
-                        tempList.append(p)
-                        for degree in range(0, 90, 5):
-                            test = Transmitter(1, location=np.array([p.x, p.y, 0]), theta=degree)
-                            error = 0
-                            for k in range(1, len(slopeList)):
-                                #location is the searchx and searchy
-                                location = np.array([searchx[k], searchy[k], 0])
-                                (testx, testy, testz) = test.field(location)
-                                
-                                #find the distance between test and search location k
-                                testr = np.linalg.norm(test.location - location)
-                                testslope = testy/testx
-                                
-                                #need to compare testy/testx with slope at last location
-                                #using RMSE 
-                                error += math.sqrt((slopeList[k] - testslope)**2 + (r[k] - testr)**2)
+                    #if ((nexty > eqn and p.y > m*p.x + b) or 
+                    #    (nexty < eqn and p.y < m*p.x + b)):
+                    tempList.append(p)
+                    for degree in range(0, 90, 5):
+                        test = Transmitter(1, location=np.array([p.x, p.y, 0]), theta=degree)
+                        error = 0
+                        for k in range(1, len(slopeList)):
+                            #location is the searchx and searchy
+                            location = np.array([searchx[k], searchy[k], 0])
+                            (testx, testy, testz) = test.field(location)
+                            
+                            #find the distance between test and search location k
+                            testr = np.linalg.norm(test.location - location)
+                            testslope = testy/testx
+                            
+                            #need to compare testy/testx with slope at last location
+                            #using RMSE 
+                            error += math.sqrt((slopeList[k] - testslope)**2 + (r[k] - testr)**2)
 
-                            if (i > 1):
-                                self.storeGuess(error, p, degree)
-                                #print ("x: %.4f, y: %.4f, error: %.2f" % (p.x, p.y, error))
+                        if (i > 1):
+                            self.storeGuess(error, p, degree)
+                            #print ("x: %.4f, y: %.4f, error: %.2f" % (p.x, p.y, error))
 
                 pointsList = tempList
             if self.distance_from_transmitter() < radius:
@@ -344,6 +344,7 @@ class Searcher:
         #draws the plot
         if visualize:
             for count in range(0, 18):
+                print count*5
                 t.theta = count*5
                 t.plot_field(xlim = (-2, 2), ylim = (-1, 1), n = 100)
                 #draw search path
@@ -351,12 +352,12 @@ class Searcher:
                     plt.annotate("x", (x, y))
 
                 #add perpendicular lines  
-                for m,b in zip(mList, bList):
-                    xarray = np.arange(x_lower_bound, x_upper_bound, .1)
-                    yarray = np.zeros(len(xarray))
-                    yarray = m*xarray + b 
-                    plt.plot(xarray, yarray)
-                    plt.draw()
+                # for m,b in zip(mList, bList):
+                #     xarray = np.arange(x_lower_bound, x_upper_bound, .1)
+                #     yarray = np.zeros(len(xarray))
+                #     yarray = m*xarray + b 
+                #     plt.plot(xarray, yarray)
+                #     plt.draw()
 
                 #draw the points with fontsize modulated by magnitude of the error
                 for p in pointsList:
@@ -368,7 +369,7 @@ class Searcher:
                     else: 
                         size = (x * 5)
                     plt.annotate(".", (p.x, p.y), fontsize = size)
-                    #print ("x: %.4f, y: %.4f, error: %.2f" % (p.x, p.y, p.error))
+                    print ("x: %.4f, y: %.4f, error: %.2f" % (p.x, p.y, x))
 
                 #draws the top 4 guesses and places the source at their average
                 for e,p in bestGuess:
@@ -529,14 +530,16 @@ x_lower_bound = -2
 y_upper_bound = 1
 y_lower_bound = -1
 
+theta = int(random.random()*90)
+
 # Define a transmitter
-t = Transmitter(1, location=np.array([.5, .2, 0]), theta=25)
+t = Transmitter(1, location=np.array([0, 0, 0]), theta=theta)
 
 #Determine random starting location for searcher
 startx = random.random()*4 - 2 #prolbem with x: .3949 y: -.0701
-starty = random.random()* -1
+starty = random.random() - 1
 
-print ("x: %.4f, y: %.4f" % (startx, starty))
+print ("x: %.4f, y: %.4f, theta: %d" % (startx, starty, theta))
 
 # Define a searcher
 l = np.array([startx, starty, 0])
