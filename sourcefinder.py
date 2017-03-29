@@ -7,6 +7,13 @@ import random as random
 import math
 import matplotlib.pyplot as plt
 
+def rotate(x, y, T):
+    return (x*math.cos(T) - y*math.sin(T), x*math.sin(T) + y*math.cos(T))
+
+def rotate_point(x, y, rotate_point_x, rotate_point_y, T):
+    a = rotate(x-rotate_point_x, y-rotate_point_y, T) 
+    return (a[0] + rotate_point_x, a[1] + rotate_point_y)
+
 class Transmitter:
     """Models an avalanche transmitter at the origin."""
 
@@ -360,16 +367,16 @@ class Searcher:
                 #     plt.draw()
 
                 #draw the points with fontsize modulated by magnitude of the error
-                for p in pointsList:
-                    e,d = zip(*p.error)
-                    #x = min(e)
-                    x = e[count]
-                    if (x > 6):
-                        size = 30
-                    else: 
-                        size = (x * 5)
-                    plt.annotate(".", (p.x, p.y), fontsize = size)
-                    print ("x: %.4f, y: %.4f, error: %.2f" % (p.x, p.y, x))
+                # for p in pointsList:
+                #     e,d = zip(*p.error)
+                #     #x = min(e)
+                #     x = e[count]
+                #     if (x > 6):
+                #         size = 30
+                #     else: 
+                #         size = (x * 5)
+                #     plt.annotate(".", (p.x, p.y), fontsize = size)
+                    #print ("x: %.4f, y: %.4f, error: %.2f" % (p.x, p.y, x))
 
                 #draws the top 4 guesses and places the source at their average
                 for e,p in bestGuess:
@@ -380,7 +387,6 @@ class Searcher:
                 plt.ylim([y_lower_bound, y_upper_bound])
 
                 plt.show()
-
 
 
         return self.location
@@ -524,38 +530,40 @@ class Searcher:
 # #plt.clf()
 ####################################################################   
 #conducts the search with source-finding analysis at each step
+def main():
+    x_upper_bound = 2
+    x_lower_bound = -2
+    y_upper_bound = 1
+    y_lower_bound = -1
 
-x_upper_bound = 2
-x_lower_bound = -2
-y_upper_bound = 1
-y_lower_bound = -1
+    theta = int(random.random()*90)
+    sourcex = random.random()*4 - 2
+    sourcey = random.random()*2 - 1
 
-theta = int(random.random()*90)
+    # Define a transmitter
+    t = Transmitter(1, location=np.array([0, 0, 0]), theta=theta)
 
-# Define a transmitter
-t = Transmitter(1, location=np.array([0, 0, 0]), theta=theta)
+    #Determine random starting location for searcher
+    startx = 2#random.random()*4 - 2 #prolbem with x: .3949 y: -.0701
+    starty = 1#random.random() - 1
 
-#Determine random starting location for searcher
-startx = random.random()*4 - 2 #prolbem with x: .3949 y: -.0701
-starty = random.random() - 1
+    print ("x: %.4f, y: %.4f, theta: %d" % (sourcex, sourcey, theta))
 
-print ("x: %.4f, y: %.4f, theta: %d" % (startx, starty, theta))
+    # Define a searcher
+    l = np.array([startx, starty, 0])
+    s = Searcher(t, l)
 
-# Define a searcher
-l = np.array([startx, starty, 0])
-s = Searcher(t, l)
-
-# Perform a search
-s.advancedSearch(.3, .1, 5, True)
-
-
-errorList.sort(key=lambda t: t[0]) 
-for e,p,d in errorList:
-    print ("x: %.4f, y: %.4f, error: %.2f, degree: %d" % (p.x, p.y, e, d))
+    # Perform a search
+    s.advancedSearch(.3, .1, 5, True)
 
 
+    errorList.sort(key=lambda t: t[0]) 
+    for e,p,d in errorList:
+        print ("x: %.4f, y: %.4f, error: %.2f, degree: %d" % (p.x, p.y, e, d))
 
-plt.show()
+
+
+    plt.show()
 
 
 
