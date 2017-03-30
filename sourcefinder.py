@@ -237,6 +237,7 @@ class Searcher:
         errorList.append((error, p, degree))
         p.setError(error, degree)
         count = len(bestGuess)
+        #print ("I am (%.2f,%.2f), with e: %.3f, degree: %d" %(p.x, p.y, error, degree))
         if count < 4:
             bestGuess.append((error, p, degree))
             bestGuess.sort(key = lambda t: t[0])
@@ -244,10 +245,6 @@ class Searcher:
         elif error < bestGuess[count-1][0]:
             bestGuess.append((error, p, degree))
             bestGuess.sort(key = lambda t: t[0])
-            print ("I am (%.2f,%.2f), with e: %.3f, degree: %d" %(p.x, p.y, error, degree))
-
-            erem, prem, drem = bestGuess[count]
-            print ("I am removing (%.2f, %.2f), with e: %.3f, degree: %d" % (prem.x, prem.y, erem, drem))
             del bestGuess[count]
             #print ("x: %.2f, y: %.2f, e: %.3f, degree: %d" %(p.x, p.y, error, degree))
 
@@ -285,6 +282,7 @@ class Searcher:
 
         for i in range(steps):
             del bestGuess[:]
+            del errorList[:]
             (x, y, z) = self.location
             searchx.append(x)
             searchy.append(y)
@@ -424,7 +422,7 @@ s.advancedSearch(.3, .1, 5, False)
 
 
 errorList.sort(key=lambda t: t[0])
-print errorList 
+#print errorList 
 for e,p,d in errorList:
     print ("x: %.4f, y: %.4f, error: %.2f, degree: %d" % (p.x, p.y, e, d))
 
