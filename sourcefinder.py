@@ -73,19 +73,8 @@ class Transmitter:
             and direction of the transmitter's magnetic field (in uA/m) at the
             given location."""
 
-        #print("field orientation: %d" %self.theta)
-
-        xprime = location[0]
-        yprime = location[1]
-
         theta = math.radians(self.theta)
-
-        T = math.tan(theta)
-        S = math.sin(theta)
-        C = math.cos(theta)
-
-        x = (xprime + T*yprime)/(T*S+C)
-        y = (yprime-T*xprime)/(T*S+C)
+        x,y = rotate_point(location[0], location[1], self.location[0], self.location[1], -theta)
 
         location = [x, y, 0]
 
@@ -249,13 +238,18 @@ class Searcher:
         p.setError(error, degree)
         count = len(bestGuess)
         if count < 4:
-            bestGuess.append((error, p))
+            bestGuess.append((error, p, degree))
             bestGuess.sort(key = lambda t: t[0])
         #else check if smaller than the largest item in the list
         elif error < bestGuess[count-1][0]:
-            bestGuess.append((error, p))
+            bestGuess.append((error, p, degree))
             bestGuess.sort(key = lambda t: t[0])
+            print ("I am (%.2f,%.2f), with e: %.3f, degree: %d" %(p.x, p.y, error, degree))
+
+            erem, prem, drem = bestGuess[count]
+            print ("I am removing (%.2f, %.2f), with e: %.3f, degree: %d" % (prem.x, prem.y, erem, drem))
             del bestGuess[count]
+            #print ("x: %.2f, y: %.2f, e: %.3f, degree: %d" %(p.x, p.y, error, degree))
 
         #print("x: %.2f, y: %.2f, e: %.3f" %(p.x, p.y, error))
 
@@ -267,6 +261,12 @@ class Searcher:
     #at each step of the search, calculate the likelihood of a transmitter
     #at each location, constraining the tested locations by perpendicular 
     #lines
+
+        x_upper_bound = 2
+        x_lower_bound = -2
+        y_upper_bound = 1
+        y_lower_bound = -1
+
         searchx = []
         searchy = []
         r = []
@@ -341,9 +341,11 @@ class Searcher:
         
         avgx = 0
         avgy = 0        
-        for e,p in bestGuess:
+        for e,p,d in bestGuess:
+            print("Best Guesses x: %.4f, y: %.4f, error: %.2f, degree: %d" % (p.x, p.y, e, d))
             avgx += p.x
             avgy += p.y
+
         xguess = avgx/len(bestGuess)
         yguess = avgy/len(bestGuess)
         print("Source guess: %.2f, %.2f" % (xguess,yguess))
@@ -352,8 +354,9 @@ class Searcher:
         if visualize:
             for count in range(0, 18):
                 print count*5
-                t.theta = count*5
-                t.plot_field(xlim = (-2, 2), ylim = (-1, 1), n = 100)
+                test = Transmitter(1, location=np.array([xguess, yguess, 0]), theta=count*5)
+                #t.theta = count*5
+                test.plot_field(xlim = (-2, 2), ylim = (-1, 1), n = 100)
                 #draw search path
                 for x,y in zip(searchx, searchy):    
                     plt.annotate("x", (x, y))
@@ -367,15 +370,15 @@ class Searcher:
                 #     plt.draw()
 
                 #draw the points with fontsize modulated by magnitude of the error
-                # for p in pointsList:
-                #     e,d = zip(*p.error)
-                #     #x = min(e)
-                #     x = e[count]
-                #     if (x > 6):
-                #         size = 30
-                #     else: 
-                #         size = (x * 5)
-                #     plt.annotate(".", (p.x, p.y), fontsize = size)
+                for p in pointsList:
+                    e,d = zip(*p.error)
+                    #x = min(e)
+                    x = e[count]
+                    if (x > 6):
+                        size = 30
+                    else: 
+                        size = (x * 5)
+                    plt.annotate(".", (p.x, p.y), fontsize = size)
                     #print ("x: %.4f, y: %.4f, error: %.2f" % (p.x, p.y, x))
 
                 #draws the top 4 guesses and places the source at their average
@@ -388,182 +391,42 @@ class Searcher:
 
                 plt.show()
 
-
         return self.location
 
 
-####################################################################
-#Initiates a generic search
-
-
-# #Define a transmitter
-# t = Transmitter(1, location=np.array([0, 0, 0]))
-
-# # Define a searcher
-# l = np.array([2, 0, 0])
-# s = Searcher(t, l)
-
-# # Perform a search
-# s.search(.3, .2, 1000, True)
-
-
-# ####################################################################
-# #Analysis of search by creating transmitters at each location and 
-# #determining their error, and removing points that lie on the 
-# #wrong side of the perpendicular line
-
-# x_upper_bound = 2
-# x_lower_bound = -2
-# y_upper_bound = 1
-# y_lower_bound = -1
-
-
-# searchx = searchx[1:7] #1:7 when 14 spots
-# searchy = searchy[1:7]
-
-# #for x,y in zip(searchx,searchy):
-# #    print x,y
-
-# #create vector array 
-# slope = []
-# for i in range(1, len(searchy)):
-#     s = (searchy[i]-searchy[i-1])/(searchx[i]-searchx[i-1])
-#     slope.append(s)
-# slope.append(s)
-# #print slope
-
-# #Brute force search
-
-# pixelX = np.linspace(x_lower_bound, x_upper_bound, 40)
-# pixelY = np.linspace(y_lower_bound, y_upper_bound, 40)
-
-# #minerror = 5000
-# errorRank = []
-# xvals = []
-# yvals = []
-
-# for i in range(0, len(pixelX)):
-#     for j in range(0, len(pixelY)):
-
-#         test = Transmitter(1, location=np.array([pixelX[i], pixelY[j], 0]))
-#         error = 0
-#         for k in range(1, len(searchx)):
-#             location = np.array([searchx[k], searchy[k], 0])
-#             (testx, testy, testz) = test.field(location)
-            
-#             #need to compare testy/testx with slope at that location
-#             testslope = testy/testx
-#             error += abs(slope[k] - testslope)
-
-#             #to rotate the graph, compare to all the angles plus c
-
-#         #print ("(%.2f,%.2f): %f" %(pixelX[i], pixelY[j], error))
-#         #minerror = min(error, minerror)
-#         xvals.append(pixelX[i])
-#         yvals.append(pixelY[j])
-#         errorRank.append(error)
-
-
-# zipped = zip(errorRank, xvals, yvals)
-
-# zipped.sort(key = lambda t: t[0])
-
-# #for e,x,y in zipped:
-#     #print ("(%.2f,%.2f): %f" % (x,y,e))
-
-# #Key observations: 
-# #   more points to test is better
-# #   more of the path means a more accurate guess
-
-# pixelX = np.linspace(x_lower_bound, x_upper_bound, 40)
-# pixelY = np.linspace(y_lower_bound, y_upper_bound, 40)
-
-# pointsList = []
-
-# for px in pixelX:
-#     for py in pixelY:
-#         pointsList.append(Point(px, py))
-
-
-# #for each point, remove pixels that are not on the same side of the
-# # perpendicular line as the previous point
-
-# for i in range(1, len(slope)-1):
-#     #get perpendicular line equation, y = mx+b
-#     m = -1.0/slope[i]
-#     b = searchy[i] - m*searchx[i]
-
-#     #check which side the last point is on
-#     lasty = searchy[i-1]
-#     eqn = m*searchx[i-1] + b
-
-#     # xarray = np.arange(x_lower_bound, x_upper_bound, .1)
-#     # yarray = np.zeros(len(xarray))
-#     # yarray = m*xarray + b 
-#     # plt.plot(xarray, yarray)
-#     # plt.draw()
-
-#     if (lasty > eqn):
-#         #get rid of points above, eqn should be y <= mx+b
-#         tempList = []
-#         for p in pointsList:
-#             if (p.y < m*p.x + b):
-#                 tempList.append(p)
-#         pointsList = tempList
-
-
-#     elif (lasty < eqn):
-#         #get rid of points below, eqn should be y >= mx+b
-#         tempList = []
-#         for p in pointsList:
-#             if (p.y > m*p.x + b):
-#                 tempList.append(p)
-#         pointsList = tempList
-
-
-# #for p in pointsList:
-#     #plt.annotate(".", (p.x, p.y))
-
-
-
-# plt.show()
-# #plt.clf()
 ####################################################################   
 #conducts the search with source-finding analysis at each step
-def main():
-    x_upper_bound = 2
-    x_lower_bound = -2
-    y_upper_bound = 1
-    y_lower_bound = -1
+#def main():
+x_upper_bound = 2
+x_lower_bound = -2
+y_upper_bound = 1
+y_lower_bound = -1
 
-    theta = int(random.random()*90)
-    sourcex = random.random()*4 - 2
-    sourcey = random.random()*2 - 1
+theta = int(random.random()*90)
+sourcex = random.random()*4 - 2
+sourcey = random.random()*2 - 1
 
-    # Define a transmitter
-    t = Transmitter(1, location=np.array([0, 0, 0]), theta=theta)
+# Define a transmitter
+t = Transmitter(1, location=np.array([sourcex, sourcey, 0]), theta=theta)
 
-    #Determine random starting location for searcher
-    startx = 2#random.random()*4 - 2 #prolbem with x: .3949 y: -.0701
-    starty = 1#random.random() - 1
+#Determine random starting location for searcher
+startx = 1#random.random()*4 - 2 #prolbem with x: .3949 y: -.0701
+starty = 0#random.random() - 1
 
-    print ("x: %.4f, y: %.4f, theta: %d" % (sourcex, sourcey, theta))
+print ("x: %.4f, y: %.4f, theta: %d" % (sourcex, sourcey, theta))
 
-    # Define a searcher
-    l = np.array([startx, starty, 0])
-    s = Searcher(t, l)
+# Define a searcher
+l = np.array([startx, starty, 0])
+s = Searcher(t, l)
 
-    # Perform a search
-    s.advancedSearch(.3, .1, 5, True)
-
-
-    errorList.sort(key=lambda t: t[0]) 
-    for e,p,d in errorList:
-        print ("x: %.4f, y: %.4f, error: %.2f, degree: %d" % (p.x, p.y, e, d))
+# Perform a search
+s.advancedSearch(.3, .1, 5, False)
 
 
-
-    plt.show()
+errorList.sort(key=lambda t: t[0])
+print errorList 
+for e,p,d in errorList:
+    print ("x: %.4f, y: %.4f, error: %.2f, degree: %d" % (p.x, p.y, e, d))
 
 
 
