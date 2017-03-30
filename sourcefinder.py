@@ -132,14 +132,6 @@ class Point:
         self.error = []
 
     def setError(self, e, degree):
-        # for i in range(0, len(self.error)):
-        #     d = self.error[i][1]
-        #     if d == degree:
-        #         self.error[i][0] = error
-        # for e,d in self.error:
-        #     if d == degree:
-
-        #     else:
         self.error.append((e, degree))
 
 
@@ -268,13 +260,13 @@ class Searcher:
         searchy = []
         r = []
 
-        pixelX = np.linspace(x_lower_bound, x_upper_bound, 50)
+        pixelX = np.linspace(x_lower_bound, x_upper_bound, 100)
         pixelY = np.linspace(y_lower_bound, y_upper_bound, 50)
 
         pointsList = []
         slopeList = []
-        mList = []
-        bList = []
+        #mList = []
+        #bList = []
 
         for px in pixelX:
             for py in pixelY:
@@ -294,15 +286,15 @@ class Searcher:
                 slopeList.append(slope)
 
                 #find the perpendicular line constants
-                m = -1.0/slope
-                b = searchy[i-1] - m*searchx[i-1]
+                # m = -1.0/slope
+                # b = searchy[i-1] - m*searchx[i-1]
 
-                #check which side the current point is on
-                nexty = y
-                eqn = m*x + b
+                # #check which side the current point is on
+                # nexty = y
+                # eqn = m*x + b
 
-                mList.append(m)
-                bList.append(b)
+                # mList.append(m)
+                # bList.append(b)
                 
                 tempList = []
                 for p in pointsList:
@@ -310,8 +302,8 @@ class Searcher:
                     del p.error[:]
                     #if ((nexty > eqn and p.y > m*p.x + b) or 
                     #    (nexty < eqn and p.y < m*p.x + b)):
-                    tempList.append(p)
-                    for degree in range(0, 90, 5):
+                    #tempList.append(p)
+                    for degree in range(0, 180, 2):
                         test = Transmitter(1, location=np.array([p.x, p.y, 0]), theta=degree)
                         error = 0
                         for k in range(1, len(slopeList)):
@@ -331,7 +323,7 @@ class Searcher:
                             self.storeGuess(error, p, degree)
                             #print ("x: %.4f, y: %.4f, error: %.2f" % (p.x, p.y, error))
 
-                pointsList = tempList
+                #pointsList = tempList
             if self.distance_from_transmitter() < radius:
                 break
 
@@ -344,13 +336,17 @@ class Searcher:
             avgx += p.x
             avgy += p.y
 
+        print ("Taken %d steps" % (i+1))
+        if len(bestGuess) == 0:
+            print "started too close"
+            return 
         xguess = avgx/len(bestGuess)
         yguess = avgy/len(bestGuess)
-        print("Source guess: %.2f, %.2f" % (xguess,yguess))
+        print("Source guess: %.4f, %.4f" % (xguess,yguess))
 
         #draws the plot
         if visualize:
-            for count in range(0, 18):
+            for count in range(0, 36):
                 print count*5
                 test = Transmitter(1, location=np.array([xguess, yguess, 0]), theta=count*5)
                 #t.theta = count*5
@@ -380,7 +376,7 @@ class Searcher:
                     #print ("x: %.4f, y: %.4f, error: %.2f" % (p.x, p.y, x))
 
                 #draws the top 4 guesses and places the source at their average
-                for e,p in bestGuess:
+                for e,p,d in bestGuess:
                     plt.annotate("*", (p.x, p.y))
                 plt.annotate("o", (xguess, yguess))
 
@@ -400,7 +396,9 @@ x_lower_bound = -2
 y_upper_bound = 1
 y_lower_bound = -1
 
-theta = int(random.random()*90)
+#for i in range(0, 10):
+
+theta = int(random.random()*180)
 sourcex = random.random()*4 - 2
 sourcey = random.random()*2 - 1
 
@@ -421,13 +419,19 @@ s = Searcher(t, l)
 s.advancedSearch(.3, .1, 5, False)
 
 
-errorList.sort(key=lambda t: t[0])
-#print errorList 
-for e,p,d in errorList:
-    print ("x: %.4f, y: %.4f, error: %.2f, degree: %d" % (p.x, p.y, e, d))
+
+
+# errorList.sort(key=lambda t: t[0])
+# for e,p,d in errorList:
+#     print ("x: %.4f, y: %.4f, error: %.2f, degree: %d" % (p.x, p.y, e, d))
 
 
 
+
+"""What to do...
+run a bunch of trials with different parameters
+determine the difference between the guess and the source
+whichever has the smallest difference, set the parameters"""
 
 
 
