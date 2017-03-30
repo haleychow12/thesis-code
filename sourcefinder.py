@@ -272,6 +272,7 @@ class Searcher:
             for py in pixelY:
                 pointsList.append(Point(px, py))
 
+
         for i in range(steps):
             del bestGuess[:]
             del errorList[:]
@@ -329,6 +330,7 @@ class Searcher:
 
             self.step(stepsize = stepsize)
         
+        #calculate the best guess vector
         avgx = 0
         avgy = 0        
         for e,p,d in bestGuess:
@@ -336,10 +338,12 @@ class Searcher:
             avgx += p.x
             avgy += p.y
 
+        #check if less than 5 iterations of the loop 
         print ("Taken %d steps" % (i+1))
-        if len(bestGuess) == 0:
+        if i < 4:
             print "started too close"
-            return 
+            return (3, 3)
+
         xguess = avgx/len(bestGuess)
         yguess = avgy/len(bestGuess)
         print("Source guess: %.4f, %.4f" % (xguess,yguess))
@@ -385,7 +389,7 @@ class Searcher:
 
                 plt.show()
 
-        return self.location
+        return (xguess, yguess)
 
 
 ####################################################################   
@@ -396,29 +400,43 @@ x_lower_bound = -2
 y_upper_bound = 1
 y_lower_bound = -1
 
-#for i in range(0, 10):
+trials = 10
 
-theta = int(random.random()*180)
-sourcex = random.random()*4 - 2
-sourcey = random.random()*2 - 1
+avgDistance = np.zeros(trials) 
 
-# Define a transmitter
-t = Transmitter(1, location=np.array([sourcex, sourcey, 0]), theta=theta)
+i = 0
+while (i < trials):
 
-#Determine random starting location for searcher
-startx = 1#random.random()*4 - 2 #prolbem with x: .3949 y: -.0701
-starty = 0#random.random() - 1
+    theta = int(random.random()*180)
+    sourcex = random.random()*4 - 2
+    sourcey = random.random()*2 - 1
 
-print ("x: %.4f, y: %.4f, theta: %d" % (sourcex, sourcey, theta))
+    # Define a transmitter
+    t = Transmitter(1, location=np.array([sourcex, sourcey, 0]), theta=theta)
 
-# Define a searcher
-l = np.array([startx, starty, 0])
-s = Searcher(t, l)
+    #Determine random starting location for searcher
+    startx = 1#random.random()*4 - 2 #prolbem with x: .3949 y: -.0701
+    starty = 0#random.random() - 1
 
-# Perform a search
-s.advancedSearch(.3, .1, 5, False)
+    print ("x: %.4f, y: %.4f, theta: %d" % (sourcex, sourcey, theta))
 
+    # Define a searcher
+    l = np.array([startx, starty, 0])
+    s = Searcher(t, l)
 
+    # Perform a search
+    xguess, yguess = s.advancedSearch(.3, .1, 5, False)
+    
+    #redo iteration if not enough steps
+    if (xguess == 3 and yguess == 3):
+        print("redoing iteration")
+        continue
+
+    avgDistance[i] = math.sqrt((sourcex - xguess)**2 + (sourcey - yguess)**2)
+    print("Distance between the guess and source is %.4f" % avgDistance[i])
+    i += 1
+
+print ("Avg Distance: %.4f" % (np.mean(avgDistance)))
 
 
 # errorList.sort(key=lambda t: t[0])
@@ -427,11 +445,6 @@ s.advancedSearch(.3, .1, 5, False)
 
 
 
-
-"""What to do...
-run a bunch of trials with different parameters
-determine the difference between the guess and the source
-whichever has the smallest difference, set the parameters"""
 
 
 

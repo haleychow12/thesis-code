@@ -1,0 +1,70 @@
+x: -1.3619, y: 0.6252, theta: 22
+Best Guesses x: -1.3939, y: 0.4694, error: 0.02, degree: 26
+Best Guesses x: -1.3535, y: 0.6735, error: 0.02, degree: 130
+Taken 5 steps
+Source guess: -1.3737, 0.5714
+Distance between the guess and source is 0.0550
+x: -1.6057, y: -0.6118, theta: 46
+Best Guesses x: -1.6364, y: -0.4694, error: 0.01, degree: 152
+Best Guesses x: -1.5960, y: -0.6327, error: 0.02, degree: 156
+Taken 5 steps
+Source guess: -1.6162, -0.5510
+Distance between the guess and source is 0.0617
+x: 0.4369, y: -0.1408, theta: 73
+Best Guesses x: 0.4242, y: -0.1020, error: 0.06, degree: 68
+Best Guesses x: 0.4242, y: -0.1429, error: 0.06, degree: 72
+Taken 5 steps
+Source guess: 0.4242, -0.1224
+Distance between the guess and source is 0.0223
+x: -1.6291, y: -0.4623, theta: 109
+Best Guesses x: -1.5556, y: -0.5918, error: 0.15, degree: 112
+Best Guesses x: -1.6768, y: -0.2245, error: 0.21, degree: 104
+Taken 5 steps
+Source guess: -1.6162, -0.4082
+Distance between the guess and source is 0.0557
+x: 1.2198, y: -0.1932, theta: 89
+Taken 1 steps
+started too close
+redoing iteration
+x: -1.4204, y: -0.9140, theta: 136
+Best Guesses x: -1.4343, y: -0.9184, error: 0.04, degree: 136
+Best Guesses x: -1.3939, y: -1.0000, error: 0.05, degree: 138
+Taken 5 steps
+Source guess: -1.4141, -0.9592
+Distance between the guess and source is 0.0456
+x: 1.1938, y: -0.9370, theta: 89
+Best Guesses x: 0.9495, y: -0.9592, error: 0.21, degree: 154
+Best Guesses x: 0.9899, y: -0.8776, error: 0.23, degree: 156
+Taken 5 steps
+Source guess: 0.9697, -0.9184
+Distance between the guess and source is 0.2249
+x: -0.3316, y: -0.4167, theta: 8
+Best Guesses x: -0.3434, y: -0.4694, error: 0.36, degree: 10
+Best Guesses x: -0.1818, y: 0.1429, error: 0.47, degree: 164
+Taken 5 steps
+Source guess: -0.2626, -0.1633
+Distance between the guess and source is 0.2626
+x: -1.4156, y: -0.0122, theta: 176
+Best Guesses x: -1.3939, y: -0.1837, error: 0.66, degree: 0
+Best Guesses x: -1.3131, y: -0.1020, error: 1.21, degree: 178
+Taken 5 steps
+Source guess: -1.3535, -0.1429
+Distance between the guess and source is 0.1447
+x: -1.4670, y: -0.9758, theta: 115
+Best Guesses x: -1.9192, y: -0.5510, error: 1.72, degree: 104
+Best Guesses x: -1.6364, y: -1.0000, error: 2.68, degree: 114
+Taken 5 steps
+Source guess: -1.7778, -0.7755
+Distance between the guess and source is 0.3698
+x: -1.7110, y: 0.9427, theta: 35
+Best Guesses x: -1.7172, y: 0.9184, error: 0.03, degree: 142
+Best Guesses x: -1.7980, y: 0.6327, error: 0.03, degree: 42
+Taken 5 steps
+Source guess: -1.7576, 0.7755
+Distance between the guess and source is 0.1736
+Avg Distance: 0.1416
+
+Parameters: 
+every 2 degrees [0,180]
+2 entries in the best guesses array
+100 x 50 points
