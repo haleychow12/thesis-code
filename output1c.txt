@@ -79,3 +79,8 @@ Taken 5 steps
 Source guess: 0.5253, -0.4184
 Distance between the guess and source is 0.8716
 Avg Distance: 0.2303
+
+Parameters: 
+every 2 degrees [0,180]
+4 entries in the best guesses array
+100 x 50 points

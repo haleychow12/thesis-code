@@ -229,7 +229,7 @@ class Searcher:
         errorList.append((error, p, degree))
         p.setError(error, degree)
         count = len(bestGuess)
-        #print ("I am (%.2f,%.2f), with e: %.3f, degree: %d" %(p.x, p.y, error, degree))
+
         if count < 4:
             bestGuess.append((error, p, degree))
             bestGuess.sort(key = lambda t: t[0])
@@ -238,9 +238,7 @@ class Searcher:
             bestGuess.append((error, p, degree))
             bestGuess.sort(key = lambda t: t[0])
             del bestGuess[count]
-            #print ("x: %.2f, y: %.2f, e: %.3f, degree: %d" %(p.x, p.y, error, degree))
 
-        #print("x: %.2f, y: %.2f, e: %.3f" %(p.x, p.y, error))
 
 #######################################################################
 
@@ -368,15 +366,15 @@ class Searcher:
                 #     plt.draw()
 
                 #draw the points with fontsize modulated by magnitude of the error
-                for p in pointsList:
-                    e,d = zip(*p.error)
-                    #x = min(e)
-                    x = e[count]
-                    if (x > 6):
-                        size = 30
-                    else: 
-                        size = (x * 5)
-                    plt.annotate(".", (p.x, p.y), fontsize = size)
+                # for p in pointsList:
+                #     e,d = zip(*p.error)
+                #     #x = min(e)
+                #     x = e[count]
+                #     if (x > 6):
+                #         size = 30
+                #     else: 
+                #         size = (x * 5)
+                #     plt.annotate(".", (p.x, p.y), fontsize = size)
                     #print ("x: %.4f, y: %.4f, error: %.2f" % (p.x, p.y, x))
 
                 #draws the top 4 guesses and places the source at their average
@@ -410,6 +408,7 @@ while (i < trials):
     theta = int(random.random()*180)
     sourcex = random.random()*4 - 2
     sourcey = random.random()*2 - 1
+
 
     # Define a transmitter
     t = Transmitter(1, location=np.array([sourcex, sourcey, 0]), theta=theta)
@@ -445,6 +444,7 @@ print ("Avg Distance: %.4f" % (np.mean(avgDistance)))
 
 
 
+#need an error Threshold
 
 
 
