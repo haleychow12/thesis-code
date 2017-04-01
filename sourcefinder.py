@@ -239,7 +239,6 @@ class Searcher:
             bestGuess.sort(key = lambda t: t[0])
             del bestGuess[count]
 
-
 #######################################################################
 
     #Searcher class runs a more advanced version of search
@@ -350,9 +349,9 @@ class Searcher:
         if visualize:
             for count in range(0, 36):
                 print count*5
-                test = Transmitter(1, location=np.array([xguess, yguess, 0]), theta=count*5)
-                #t.theta = count*5
-                test.plot_field(xlim = (-2, 2), ylim = (-1, 1), n = 100)
+                #test = Transmitter(1, location=np.array([xguess, yguess, 0]), theta=count*5)
+                t.theta = count*5
+                t.plot_field(xlim = (-2, 2), ylim = (-1, 1), n = 100)
                 #draw search path
                 for x,y in zip(searchx, searchy):    
                     plt.annotate("x", (x, y))
@@ -366,15 +365,15 @@ class Searcher:
                 #     plt.draw()
 
                 #draw the points with fontsize modulated by magnitude of the error
-                # for p in pointsList:
-                #     e,d = zip(*p.error)
-                #     #x = min(e)
-                #     x = e[count]
-                #     if (x > 6):
-                #         size = 30
-                #     else: 
-                #         size = (x * 5)
-                #     plt.annotate(".", (p.x, p.y), fontsize = size)
+                for p in pointsList:
+                    e,d = zip(*p.error)
+                    #x = min(e)
+                    x = e[count]
+                    if (x > 6):
+                        size = 30
+                    else: 
+                        size = (x * 5)
+                    plt.annotate(".", (p.x, p.y), fontsize = size)
                     #print ("x: %.4f, y: %.4f, error: %.2f" % (p.x, p.y, x))
 
                 #draws the top 4 guesses and places the source at their average
@@ -387,6 +386,20 @@ class Searcher:
 
                 plt.show()
 
+        #Sums the error at different steps, sorts and prints the list
+        sumE = []
+        for p in pointsList:
+            e,d = zip(*p.error)
+            sumE.append(sum(e))
+        zipped = zip(pointsList, sumE)
+        zipped.sort(key=lambda t: t[1])
+        count = 0
+        for p, s in zipped:
+            if (count == 4):
+                break
+            print ("x: %.4f, y: %.4f, errorSum: %.2f" % (p.x, p.y, s))
+            count += 1
+
         return (xguess, yguess)
 
 
@@ -397,12 +410,13 @@ x_upper_bound = 2
 x_lower_bound = -2
 y_upper_bound = 1
 y_lower_bound = -1
+i = 0
 
 trials = 10
 
 avgDistance = np.zeros(trials) 
 
-i = 0
+
 while (i < trials):
 
     theta = int(random.random()*180)
@@ -437,14 +451,22 @@ while (i < trials):
 
 print ("Avg Distance: %.4f" % (np.mean(avgDistance)))
 
-
-# errorList.sort(key=lambda t: t[0])
+#errorList.sort(key=lambda t: t[0])
 # for e,p,d in errorList:
 #     print ("x: %.4f, y: %.4f, error: %.2f, degree: %d" % (p.x, p.y, e, d))
 
 
 
+
 #need an error Threshold
+
+#need to make an actual algorithm, sample x random points? take the smallest
+#and crawl from there?
+
+#do a general search with much fewer points, refine the search in that sector
+#add more points
+
+
 
 
 
