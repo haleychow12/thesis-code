@@ -386,20 +386,6 @@ class Searcher:
 
                 plt.show()
 
-        #Sums the error at different steps, sorts and prints the list
-        sumE = []
-        for p in pointsList:
-            e,d = zip(*p.error)
-            sumE.append(sum(e))
-        zipped = zip(pointsList, sumE)
-        zipped.sort(key=lambda t: t[1])
-        count = 0
-        for p, s in zipped:
-            if (count == 4):
-                break
-            print ("x: %.4f, y: %.4f, errorSum: %.2f" % (p.x, p.y, s))
-            count += 1
-
         return (xguess, yguess)
 
 
@@ -412,7 +398,7 @@ y_upper_bound = 1
 y_lower_bound = -1
 i = 0
 
-trials = 10
+trials = 1
 
 avgDistance = np.zeros(trials) 
 

@@ -41,20 +41,21 @@ def calc_magnetic_moment():
 #m : magnetic moment constant
 def field(tloc, myloc, theta, m):
 	theta = math.radians(theta)
-    x,y = rotate_point(dloc[0], dloc[1], tloc[0], tloc[1], -theta)
+	x,y = rotate_point(myloc[0], myloc[1], tloc[0], tloc[1], -theta)
 
-    #find the real location
-    rloc = [x, y]
+	#find the real location
+	rloc = [x, y]
+	m = [0, m]
 
-    r = rloc - sloc
-    r_norm = np.linalg.norm(r) #magnitude of the r vector
+	r = rloc - tloc
+	r_norm = np.linalg.norm(r) #magnitude of the r vector
 
-    f1 = 1 / (4 * scipy.pi)
-    f2 = 3 * r * np.dot(m, r) / (r_norm ** 5) #np.dot = rx*mx + ry*my
-    f3 = m / (r_norm ** 3)
-    f = f1 * (f2 - f3)
+	f1 = 1 / (4 * scipy.pi)
+	f2 = 3 * r * np.dot(m, r) / (r_norm ** 5) #np.dot = rx*mx + ry*my
+	f3 = m / (r_norm ** 3)
+	f = f1 * (f2 - f3)
 
-    return f * (10 ** 6)
+	return f * (10 ** 6)
 
 #Plot the vector field of the transmitter (in the xy-plane).
 #tloc (tuple): location of the transmitter
@@ -62,35 +63,36 @@ def field(tloc, myloc, theta, m):
 #ylim (tuple): (y_min, y_max) representing the y-range of the plot.
 #n (int): number of points between each of (x_min, x_max) and
 #    (y_min, y_max), inclusive.
-def plot_field(tloc, xlim, ylim, n):
+def plot_field(tloc, theta, m, xlim, ylim, n):
 	x0, x1 = xlim
-    y0, y1 = ylim
+	y0, y1 = ylim
 
-    nc = n * 1j
-    Y, X = np.ogrid[y0:y1:nc, x0:x1:nc]
+	nc = n * 1j
+	Y, X = np.ogrid[y0:y1:nc, x0:x1:nc]
 
-    xfield = np.zeros((n, n))
-    yfield = np.zeros((n, n))
-    mag = np.zeros((n, n))
-    for i in range(n):
-        for j in range(n):
-            location = np.array([X[0][i], Y[j][0]])
-            (x, y) = field(tloc)
+	xfield = np.zeros((n, n))
+	yfield = np.zeros((n, n))
+	mag = np.zeros((n, n))
+	for i in range(n):
+	    for j in range(n):
+	        location = np.array([X[0][i], Y[j][0]])
+	        (x, y) = field(tloc, location, theta, m)
 
-            xfield[j][i] = x
-            yfield[j][i] = y
-            mag[j][i] = np.linalg.norm(np.array([x, y]))
+	        xfield[j][i] = x
+	        yfield[j][i] = y
+	        mag[j][i] = np.linalg.norm(np.array([x, y]))
 
-    plt.streamplot(X, Y, xfield, yfield)
+	plt.streamplot(X, Y, xfield, yfield)
 
-    #plt.show()
+	#plt.show()
 
 #Returns the straight line distance between loc1 and loc2
 #loc1 (tuple): location of the source
 #loc2 (tuple): location of the destination
 def distance(loc1, loc2):
-    r = np.linalg.norm(myloc - otherloc)
-    return r
+    return np.linalg.norm(loc1 - loc2)
+
+    
 
 #Returns a tuple that contains the x,y location of the next step
 #tloc (tuple): location of the transmitter
@@ -98,12 +100,13 @@ def distance(loc1, loc2):
 #theta : in degrees
 #stepsize: self explanatory
 def step(tloc, myloc, theta, stepsize = 0.1):
+	(lx, ly) = myloc
 	moment = calc_magnetic_moment()
-    (fx, fy) = field(tloc, myloc=myloc, theta=theta, m=moment)
-    c = stepsize / np.linalg.norm(np.array([fx, fy]))
-    newloc = (lx + c * fx, ly + c * fy)
+	(fx, fy) = field(tloc, myloc=myloc, theta=theta, m=moment)
+	c = stepsize / np.linalg.norm(np.array([fx, fy]))
+	newloc = (lx + c * fx, ly + c * fy)
 
-    return newloc
+	return newloc
 
 #updates the bestGuess array to hold transmitter locations in order
 #bestGuess (list of tuples): list of points with the smallest error value
@@ -112,12 +115,14 @@ def step(tloc, myloc, theta, stepsize = 0.1):
 #p: Point where the test transmitter is located
 #degree: Theta that the test transmitter was oriented in
 def storeGuess(bestGuess, error, p, degree):
+    bestGuessLength = 4
+
     #append if list is too short
-    errorList.append((error, p, degree))
+    #errorList.append((error, p, degree))
     p.setError(error, degree)
     count = len(bestGuess)
 
-    if count < 4:
+    if count < bestGuessLength:
         bestGuess.append((error, p, degree))
         bestGuess.sort(key = lambda t: t[0])
     #else check if smaller than the largest item in the list
@@ -126,32 +131,195 @@ def storeGuess(bestGuess, error, p, degree):
         bestGuess.sort(key = lambda t: t[0])
         del bestGuess[count]
 
+#xguess, yguess = findAvg(bestGuess)
+#Calculates the average of the bestGuess array and prints findings
+#bestGuess (list of tuples): list of points with the smallest error value
+#	organized by (error, point, degree)
+#stepNumber: the number of steps that were taken for this data
+def findAvg(bestGuess, stepNumber):
+	avgx = 0
+	avgy = 0
+	for e,p,d in bestGuess:
+	    print("Best Guesses x: %.4f, y: %.4f, error: %.2f, degree: %d" % (p.x, p.y, e, d))
+	    avgx += p.x
+	    avgy += p.y
 
-def bruteforce_search(tloc, myloc, theta, stepsize = 0.1, steps = 1000, visualize = False):
+	#check if less than 5 iterations of the loop 
+	print ("Taken %d steps" % (stepNumber+1))
+	if stepNumber < 4:
+	    print "started too close"
+	    return 3, 3
+
+	xguess = avgx/len(bestGuess)
+	yguess = avgy/len(bestGuess)
+	print("Source guess: %.4f, %.4f" % (xguess,yguess))
+
+	return xguess, yguess
+
+#draws a plot with a transmitter at tloc, with searchx and searchy locations
+#marked by x, points sized by magnitude of their error and with the bestGuess
+#locations marked with a *
+def drawplot(tloc, searchx, searchy, pointsList, bestGuess):
+	m = calc_magnetic_moment()
+	for count in range(0, 36):
+	    print count*5
+	    #test = Transmitter(1, location=np.array([xguess, yguess, 0]), theta=count*5)
+	    theta = count*5
+	    plot_field(tloc, theta, m, xlim = (-2, 2), ylim = (-1, 1), n = 100)
+	    #draw search path
+	    for x,y in zip(searchx, searchy):    
+	        plt.annotate("x", (x, y))
+
+	    #draw the points with fontsize modulated by magnitude of the error
+	    # for p in pointsList:
+	    #     e,d = zip(*p.error)
+	    #     #x = min(e)
+	    #     x = e[count]
+	    #     if (x > 6):
+	    #         size = 30
+	    #     else: 
+	    #         size = (x * 5)
+	    #     plt.annotate(".", (p.x, p.y), fontsize = size)
+	        #print ("x: %.4f, y: %.4f, error: %.2f" % (p.x, p.y, x))
+
+	    #draws the top 4 guesses and places the source at their average
+	    for e,p,d in bestGuess:
+	        plt.annotate("*", (p.x, p.y))
+	    #plt.annotate("o", (xguess, yguess))
+
+	    plt.xlim([-2, 2])
+	    plt.ylim([-1, 1])
+
+	    plt.show()
+
+
+def fillPointsList(xPoints, yPoints):
+	pointsList = []
+	pixelX = np.linspace(-2, 2, xPoints)
+	pixelY = np.linspace(-1, 1, yPoints)
+
+	for px in pixelX:
+		for py in pixelY:
+			pointsList.append(Point(px, py))
+
+	return pointsList
+
+#Returns a tuple that estimates the x and y location of the transciever using
+#search data
+#tloc (tuple): original location of the transmitter
+#myloc (tuple): location of the searcher
+#theta : in degrees
+#stepsize : self explanatory
+#steps : number of steps to take
+#visualize : boolean that determines whether plots are drawn
+def bruteforce_search(tloc, myloc, theta, radius = .3, stepsize = 0.1, steps = 5, visualize = False):
 	searchx = []
 	searchy = []
 	r = []
-	pointsList = []
+	
 	slopeList = []
+	bestGuess = []
 
-	pixelX = np.linspace(-2, 2, 100)
-    pixelY = np.linspace(-1, 1, 50)
-
-
+	pointsList = fillPointsList(100, 50)
+	interval = 2
+	m = calc_magnetic_moment()
 
 	for i in range(steps):
-		searchx.append(myloc[0])
-		searchy.append(myloc[1])
+		del bestGuess[:]
+		(x,y) = myloc
+		searchx.append(x)
+		searchy.append(y)
 		dist = distance(myloc, tloc)
 		r.append(dist)
 
+		if (i > 0):
+			#solve for the slope
+			slope = (y-searchy[i-1])/(x-searchx[i-1])
+			slopeList.append(slope)
 
+			for p in pointsList:
+				#check if the point is on the wrong side of the line
+				del p.error[:]
+				for degree in range(0, 180, interval):
+					#test = Transmitter(1, location=np.array([p.x, p.y, 0]), theta=degree)
+					testloc = np.array([p.x,p.y])
+					error = 0
+					for k in range(1, len(slopeList)):
+						#location is the searchx and searchy
+						searchloc = np.array([searchx[k], searchy[k]])
+						(testx, testy) = field(testloc, myloc=searchloc, theta=degree, m=m)
 
+						#find the distance between test and search location k
+						testr = distance(searchloc, testloc)
+						testslope = testy/testx
+
+						#need to compare testy/testx with slope at last location
+						#using RMSE 
+						error += math.sqrt((slopeList[k] - testslope)**2 + (r[k] - testr)**2)
+
+					if (i > 1):
+					    storeGuess(bestGuess, error, p, degree)
+					    #print ("x: %.4f, y: %.4f, error: %.2f" % (p.x, p.y, error))
 		if dist < radius:
-			break
+			break 
 		myloc = step(tloc, myloc=myloc, theta=theta, stepsize=stepsize)
 
-	return zip(searchPoints, r)
+	if visualize:
+		drawplot(tloc, searchx=searchx, searchy=searchy, pointsList=pointsList, bestGuess=bestGuess)
+
+	return findAvg(bestGuess, i)
+
+####################################################################   
+#conducts the search with source-finding analysis at each step
+def main():
+	i = 0
+	trials = 1
+	avgDistance = np.zeros(trials) 
+
+	while (i < trials):
+		#set the beginning parameters
+	    theta = int(random.random()*180)
+	    sourcex = random.random()*4 - 2
+	    sourcey = random.random()*2 - 1
+
+	    # Define a transmitter
+	    tloc = np.array([sourcex, sourcey])
+
+	    #Determine random starting location for searcher
+	    startx = 1
+	    starty = 0
+
+	    print ("x: %.4f, y: %.4f, theta: %d" % (sourcex, sourcey, theta))
+
+	    # Define a searcher
+	    myloc = np.array([startx, starty])
+
+	    # Perform a search
+	    xguess, yguess = bruteforce_search(tloc, myloc=myloc, theta=theta)
+	    
+	    #redo iteration if not enough steps
+	    if (xguess == 3 and yguess == 3):
+	        print("redoing iteration")
+	        continue
+
+	    avgDistance[i] = math.sqrt((sourcex - xguess)**2 + (sourcey - yguess)**2)
+	    print("Distance between the guess and source is %.4f" % avgDistance[i])
+	    i += 1
+
+	print ("Avg Distance: %.4f" % (np.mean(avgDistance)))
+
+
+
+#need an error Threshold
+
+#need to make an actual algorithm, sample x random points? take the smallest
+#and crawl from there?
+
+#do a general search with much fewer points, refine the search in that sector
+#add more points
+
+
+
 
 
 
