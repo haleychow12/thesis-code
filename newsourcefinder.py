@@ -139,10 +139,16 @@ def storeGuess(bestGuess, error, p, degree):
 def findAvg(bestGuess, stepNumber):
 	avgx = 0
 	avgy = 0
+	errorThreshold = 1
+
 	for e,p,d in bestGuess:
 	    print("Best Guesses x: %.4f, y: %.4f, error: %.2f, degree: %d" % (p.x, p.y, e, d))
 	    avgx += p.x
 	    avgy += p.y
+
+	    if e > errorThreshold:
+	    	print "error too large"
+	    	return 3, 3
 
 	#check if less than 5 iterations of the loop 
 	print ("Taken %d steps" % (stepNumber+1))
@@ -193,10 +199,10 @@ def drawplot(tloc, searchx, searchy, pointsList, bestGuess):
 	    plt.show()
 
 
-def fillPointsList(xPoints, yPoints):
+def fillPointsList(xlim, ylim, xPoints, yPoints):
 	pointsList = []
-	pixelX = np.linspace(-2, 2, xPoints)
-	pixelY = np.linspace(-1, 1, yPoints)
+	pixelX = np.linspace(xlim[0], xlim[1], xPoints)
+	pixelY = np.linspace(ylim[0], ylim[1], yPoints)
 
 	for px in pixelX:
 		for py in pixelY:
@@ -220,7 +226,7 @@ def bruteforce_search(tloc, myloc, theta, radius = .3, stepsize = 0.1, steps = 5
 	slopeList = []
 	bestGuess = []
 
-	pointsList = fillPointsList(100, 50)
+	pointsList = fillPointsList(xlim = (-2,2), ylim = (-1,1), xPoints=100, yPoints=50)
 	interval = 2
 	m = calc_magnetic_moment()
 
@@ -269,48 +275,136 @@ def bruteforce_search(tloc, myloc, theta, radius = .3, stepsize = 0.1, steps = 5
 
 	return findAvg(bestGuess, i)
 
+#Returns a tuple that estimates the x and y location of the transciever using
+#search data
+#tloc (tuple): original location of the transmitter
+#myloc (tuple): location of the searcher
+#theta : in degrees
+#stepsize : self explanatory
+#steps : number of steps to take
+#visualize : boolean that determines whether plots are drawn
+def tier_search(tloc, myloc, theta, radius = .3, stepsize = 0.1, steps = 5, visualize = False):
+	searchx = []
+	searchy = []
+	r = []
+	
+	slopeList = []
+	bestGuess = []
+
+	pointsList = fillPointsList(xlim =(-2,2), ylim =(-1,1), xPoints=80, yPoints=40)
+	interval = 15
+	m = calc_magnetic_moment()
+
+	for i in range(steps):
+		del bestGuess[:]
+		(x,y) = myloc
+		searchx.append(x)
+		searchy.append(y)
+		dist = distance(myloc, tloc)
+		r.append(dist)
+
+		if (i > 0):
+			#solve for the slope
+			slope = (y-searchy[i-1])/(x-searchx[i-1])
+			slopeList.append(slope)
+
+			for p in pointsList:
+				del p.error[:]
+				for degree in range(0, 180, interval):
+					#test = Transmitter(1, location=np.array([p.x, p.y, 0]), theta=degree)
+					testloc = np.array([p.x,p.y])
+					error = 0
+					for k in range(1, len(slopeList)):
+						#location is the searchx and searchy
+						searchloc = np.array([searchx[k], searchy[k]])
+						(testx, testy) = field(testloc, myloc=searchloc, theta=degree, m=m)
+
+						#find the distance between test and search location k
+						testr = distance(searchloc, testloc)
+						testslope = testy/testx
+
+						#need to compare testy/testx with slope at last location
+						#using RMSE 
+						error += math.sqrt((slopeList[k] - testslope)**2 + (r[k] - testr)**2)
+
+					if (i > 1):
+					    storeGuess(bestGuess, error, p, degree)
+					    #print ("x: %.4f, y: %.4f, error: %.2f" % (p.x, p.y, error))
+		if dist < radius:
+			break 
+		myloc = step(tloc, myloc=myloc, theta=theta, stepsize=stepsize)
+
+	xguess, yguess = findAvg(bestGuess, i)
+	if (xguess == 3 and yguess == 3):
+		return (3,3)
+	print ("Tier 1")
+	print ("dist: %f" % np.linalg.norm((xguess, yguess) - tloc))
+	
+
+	#2nd tier of searching
+	pointsList = fillPointsList(xlim=(xguess-.2,xguess+.2), ylim=(yguess-.1, yguess+.1), xPoints=30, yPoints=15)
+	for p in pointsList:
+		for degree in range(0, 180, 2):
+			testloc = np.array([p.x,p.y])
+			error = 0
+			for k in range(1, len(slopeList)):
+				searchloc = np.array([searchx[k], searchy[k]])
+				(testx, testy) = field(testloc, myloc=searchloc, theta=degree, m=m)
+				testr = distance(searchloc, testloc)
+				testslope = testy/testx
+				error += math.sqrt((slopeList[k] - testslope)**2 + (r[k] - testr)**2)
+				storeGuess(bestGuess, error, p, degree)
+
+	if visualize:
+		drawplot(tloc, searchx=searchx, searchy=searchy, pointsList=pointsList, bestGuess=bestGuess)
+
+	print("Tier 2")
+	return findAvg(bestGuess, i)
+
+
+
+
+
 ####################################################################   
 #conducts the search with source-finding analysis at each step
-def main():
-	i = 0
-	trials = 1
-	avgDistance = np.zeros(trials) 
+#def main():
+i = 0
+trials = 15
+avgDistance = np.zeros(trials) 
 
-	while (i < trials):
-		#set the beginning parameters
-	    theta = int(random.random()*180)
-	    sourcex = random.random()*4 - 2
-	    sourcey = random.random()*2 - 1
+while (i < trials):
+	#set the beginning parameters
+    theta = int(random.random()*180)
+    sourcex = random.random()*4 - 2
+    sourcey = random.random()*2 - 1
 
-	    # Define a transmitter
-	    tloc = np.array([sourcex, sourcey])
+    # Define a transmitter
+    tloc = np.array([sourcex, sourcey])
 
-	    #Determine random starting location for searcher
-	    startx = 1
-	    starty = 0
+    #Determine random starting location for searcher
+    startx = 1
+    starty = 0
 
-	    print ("x: %.4f, y: %.4f, theta: %d" % (sourcex, sourcey, theta))
+    print ("x: %.4f, y: %.4f, theta: %d" % (sourcex, sourcey, theta))
 
-	    # Define a searcher
-	    myloc = np.array([startx, starty])
+    # Define a searcher
+    myloc = np.array([startx, starty])
 
-	    # Perform a search
-	    xguess, yguess = bruteforce_search(tloc, myloc=myloc, theta=theta)
-	    
-	    #redo iteration if not enough steps
-	    if (xguess == 3 and yguess == 3):
-	        print("redoing iteration")
-	        continue
+    # Perform a search
+    xguess, yguess = tier_search(tloc, myloc=myloc, theta=theta)
+    
+    #redo iteration if not enough steps
+    if (xguess == 3 and yguess == 3):
+        print("redoing iteration")
+        continue
 
-	    avgDistance[i] = math.sqrt((sourcex - xguess)**2 + (sourcey - yguess)**2)
-	    print("Distance between the guess and source is %.4f" % avgDistance[i])
-	    i += 1
+    avgDistance[i] = math.sqrt((sourcex - xguess)**2 + (sourcey - yguess)**2)
+    print("Distance between the guess and source is %.4f" % avgDistance[i])
+    i += 1
 
-	print ("Avg Distance: %.4f" % (np.mean(avgDistance)))
+print ("Avg Distance: %.4f" % (np.mean(avgDistance)))
 
 
-
-#need an error Threshold
 
 #need to make an actual algorithm, sample x random points? take the smallest
 #and crawl from there?
