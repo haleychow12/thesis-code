@@ -250,7 +250,7 @@ def bruteforce_search(tloc, myloc, theta, radius = .3, stepsize = 0.1, steps = 5
 					#test = Transmitter(1, location=np.array([p.x, p.y, 0]), theta=degree)
 					testloc = np.array([p.x,p.y])
 					error = 0
-					for k in range(1, len(slopeList)):
+					for k in range(0, len(slopeList)):
 						#location is the searchx and searchy
 						searchloc = np.array([searchx[k], searchy[k]])
 						(testx, testy) = field(testloc, myloc=searchloc, theta=degree, m=m)
@@ -283,7 +283,7 @@ def bruteforce_search(tloc, myloc, theta, radius = .3, stepsize = 0.1, steps = 5
 #stepsize : self explanatory
 #steps : number of steps to take
 #visualize : boolean that determines whether plots are drawn
-def tier_search(tloc, myloc, theta, radius = .3, stepsize = 0.1, steps = 5, visualize = False):
+def tiered_search(tloc, myloc, theta, radius = .3, stepsize = 0.1, steps = 5, visualize = False):
 	searchx = []
 	searchy = []
 	r = []
@@ -292,7 +292,7 @@ def tier_search(tloc, myloc, theta, radius = .3, stepsize = 0.1, steps = 5, visu
 	bestGuess = []
 
 	pointsList = fillPointsList(xlim =(-2,2), ylim =(-1,1), xPoints=80, yPoints=40)
-	interval = 15
+	interval = 10
 	m = calc_magnetic_moment()
 
 	for i in range(steps):
@@ -314,7 +314,7 @@ def tier_search(tloc, myloc, theta, radius = .3, stepsize = 0.1, steps = 5, visu
 					#test = Transmitter(1, location=np.array([p.x, p.y, 0]), theta=degree)
 					testloc = np.array([p.x,p.y])
 					error = 0
-					for k in range(1, len(slopeList)):
+					for k in range(0, len(slopeList)):
 						#location is the searchx and searchy
 						searchloc = np.array([searchx[k], searchy[k]])
 						(testx, testy) = field(testloc, myloc=searchloc, theta=degree, m=m)
@@ -340,14 +340,13 @@ def tier_search(tloc, myloc, theta, radius = .3, stepsize = 0.1, steps = 5, visu
 	print ("Tier 1")
 	print ("dist: %f" % np.linalg.norm((xguess, yguess) - tloc))
 	
-
-	#2nd tier of searching
+	#2nd tier of searching, not necessary if guess < .01 away
 	pointsList = fillPointsList(xlim=(xguess-.2,xguess+.2), ylim=(yguess-.1, yguess+.1), xPoints=30, yPoints=15)
 	for p in pointsList:
 		for degree in range(0, 180, 2):
 			testloc = np.array([p.x,p.y])
 			error = 0
-			for k in range(1, len(slopeList)):
+			for k in range(0, len(slopeList)):
 				searchloc = np.array([searchx[k], searchy[k]])
 				(testx, testy) = field(testloc, myloc=searchloc, theta=degree, m=m)
 				testr = distance(searchloc, testloc)
@@ -361,7 +360,66 @@ def tier_search(tloc, myloc, theta, radius = .3, stepsize = 0.1, steps = 5, visu
 	print("Tier 2")
 	return findAvg(bestGuess, i)
 
+#visualize : boolean that determines whether plots are drawn
+def crawling_search(tloc, myloc, theta, radius = .3, stepsize = 0.1, steps = 5, visualize = False):
+	searchx = []
+	searchy = []
+	r = []
+	
+	slopeList = []
+	bestGuess = []
 
+	pointsList = fillPointsList(xlim = (-2,2), ylim = (-1,1), xPoints=100, yPoints=50)
+	interval = 1
+	samples = 20
+	m = calc_magnetic_moment()
+
+	for i in range(steps):
+		del bestGuess[:]
+		(x,y) = myloc
+		searchx.append(x)
+		searchy.append(y)
+		dist = distance(myloc, tloc)
+		r.append(dist)
+
+		if (i > 0):
+			#solve for the slope
+			slope = (y-searchy[i-1])/(x-searchx[i-1])
+			slopeList.append(slope)
+
+		if (i > 4):
+			for degree in range(0, 180, interval):
+				#sample the points
+				for count in range(0, samples):
+					testPoint = pointsList[int(random.rand()*len(pointsList))]
+					(testx, testy, testr) = getTestVals(searchloc)
+
+				testloc = np.array([p.x,p.y])
+				error = 0
+				for k in range(1, len(slopeList)):
+					#location is the searchx and searchy
+					searchloc = np.array([searchx[k], searchy[k]])
+					(testx, testy) = field(testloc, myloc=searchloc, theta=degree, m=m)
+
+					#find the distance between test and search location k
+					testr = distance(searchloc, testloc)
+					testslope = testy/testx
+
+					#need to compare testy/testx with slope at last location
+					#using RMSE 
+					error += math.sqrt((slopeList[k] - testslope)**2 + (r[k] - testr)**2)
+
+				if (i > 1):
+				    storeGuess(bestGuess, error, p, degree)
+				    #print ("x: %.4f, y: %.4f, error: %.2f" % (p.x, p.y, error))
+		if dist < radius:
+			break 
+		myloc = step(tloc, myloc=myloc, theta=theta, stepsize=stepsize)
+
+	if visualize:
+		drawplot(tloc, searchx=searchx, searchy=searchy, pointsList=pointsList, bestGuess=bestGuess)
+
+	return findAvg(bestGuess, i)
 
 
 
@@ -369,7 +427,7 @@ def tier_search(tloc, myloc, theta, radius = .3, stepsize = 0.1, steps = 5, visu
 #conducts the search with source-finding analysis at each step
 #def main():
 i = 0
-trials = 15
+trials = 40
 avgDistance = np.zeros(trials) 
 
 while (i < trials):
@@ -391,11 +449,11 @@ while (i < trials):
     myloc = np.array([startx, starty])
 
     # Perform a search
-    xguess, yguess = tier_search(tloc, myloc=myloc, theta=theta)
+    xguess, yguess = tiered_search(tloc, myloc=myloc, theta=theta)
     
     #redo iteration if not enough steps
     if (xguess == 3 and yguess == 3):
-        print("redoing iteration")
+        print("redoing iteration") #if error is too large, might want to add additional step?
         continue
 
     avgDistance[i] = math.sqrt((sourcex - xguess)**2 + (sourcey - yguess)**2)
