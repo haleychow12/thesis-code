@@ -6,6 +6,7 @@ import scipy as scipy
 import random as random
 import math
 import matplotlib.pyplot as plt
+import sys
 
 #Point class, each point is represented by an x value, and y value
 #The point class also contains an array that has an error value 
@@ -433,9 +434,11 @@ def crawling_search(tloc, myloc, theta, radius = .3, stepsize = 0.1, steps = 5, 
 			slopeList.append(slope)
 
 		if (i > 3): #for every step
+			del bestGuess[:]
 			for degree in range(0, 180, interval):
 				#check (#sample) points
-				del bestGuess[:]
+				#del bestGuess[:]
+				errormin = sys.maxint
 				for count in range(0, samples):
 					testPoint = pointsList[int(random.random()*len(pointsList))]
 					#print ("Test x: %.4f, y: %.4f" % (testPoint.x, testPoint.y))
@@ -445,12 +448,16 @@ def crawling_search(tloc, myloc, theta, radius = .3, stepsize = 0.1, steps = 5, 
 					for k in range(0, len(slopeList)):
 						(testslope, testr) = getTestVals(testloc, myloc=np.array([searchx[k], searchy[k]]), theta=degree, m=m)
 						error += math.sqrt((slopeList[k] - testslope)**2 + (r[k] - testr)**2)
-					storeGuess(bestGuess, error, testPoint, degree)
+					if (error < errormin):
+						errormin = error
+						crawlstart = testPoint
+					#storeGuess(bestGuess, error, testPoint, degree)
 
 				#take the lowest guess and crawl from there (e,p,d)
-				errormin, crawlstart, d = bestGuess[0]
+				#errormin, crawlstart, d = bestGuess[0]
 				print ("Lowest! x: %.4f, y: %.4f, error: %.2f" % (crawlstart.x, crawlstart.y, errormin))
 
+				newmin = sys.maxint
 				while (True): #some condition
 					#check bounds of the x and y
 					x = xList.tolist().index(crawlstart.x)
@@ -459,7 +466,8 @@ def crawling_search(tloc, myloc, theta, radius = .3, stepsize = 0.1, steps = 5, 
 					#compute the error at all the neighbors
 					neighbors = findNeighbors(x,y, xList, yList)
 					print ("(%.4f, %.4f)" %(xList[x], yList[y]))
-					del bestGuess[:]
+					
+
 					for p in neighbors:
 						print ("(%.4f, %.4f)" %(p.x, p.y))
 						testloc = np.array([p.x,p.y])
@@ -469,8 +477,12 @@ def crawling_search(tloc, myloc, theta, radius = .3, stepsize = 0.1, steps = 5, 
 							(testslope, testr) = getTestVals(testloc, myloc=np.array([searchx[k], searchy[k]]), theta=degree, m=m)
 							error += math.sqrt((slopeList[k] - testslope)**2 + (r[k] - testr)**2)
 						storeGuess(bestGuess, error, p, degree)
+						#store the values from neighbor with smallest error
+						if (error < newmin):
+							newmin = error 
+							newcrawl = p
 
-					newmin, newcrawl, d = bestGuess[0]
+					#check against old errormin value
 					print ("New: x: %.4f, y: %.4f, error: %.2f" % (newcrawl.x, newcrawl.y, newmin))
 					print ("Old: x: %.4f, y: %.4f, error: %.2f" % (crawlstart.x, crawlstart.y, errormin))
 					if (newmin >= errormin):
@@ -520,7 +532,7 @@ while (i < trials):
     startx = 1
     starty = 0
 
-    print ("x: %.4f, y: %.4f, theta: %d" % (sourcex, sourcey, theta))
+    #print ("x: %.4f, y: %.4f, theta: %d" % (sourcex, sourcey, theta))
 
     # Define a searcher
     myloc = np.array([startx, starty])
@@ -536,6 +548,8 @@ while (i < trials):
     avgDistance[i] = math.sqrt((sourcex - xguess)**2 + (sourcey - yguess)**2)
     print("Distance between the guess and source is %.4f" % avgDistance[i])
     i += 1
+
+    print ("x: %.4f, y: %.4f, theta: %d" % (sourcex, sourcey, theta))
 
 print ("Avg Distance: %.4f" % (np.mean(avgDistance)))
 
