@@ -210,6 +210,50 @@ def fillPointsList(xlim, ylim, xPoints, yPoints):
 
 	return pointsList
 
+
+def getXYVals(xlim, ylim, xPoints, yPoints):
+	pixelX = np.linspace(xlim[0], xlim[1], xPoints)
+	pixelY = np.linspace(ylim[0], ylim[1], yPoints)
+
+	return pixelX, pixelY
+
+#Returns a tuple [testslope, testr] with the test values computed
+#tloc (tuple): location of the test transmitter
+#myloc (tuple): location where the field will be solved for
+#theta : in degrees, the orientation of the field
+#m : magnetic moment constant
+def getTestVals(tloc, myloc, theta, m):
+	(testx, testy) = field(tloc, myloc=myloc, theta=theta, m=m)
+	#find the distance between test and search location k
+	testr = distance(myloc, tloc)
+	testslope = testy/testx
+
+	return testslope, testr
+
+def findNeighbors(x, y, xList, yList):
+	neighbors = []
+	if (x > 0):
+		neighbors.append(Point(xList[x-1],yList[y]))
+		if (y > 0):
+			neighbors.append(Point(xList[x-1], yList[y-1]))
+		if (y+1 < len(yList)):
+			neighbors.append(Point(xList[x-1], yList[y+1]))
+	if (x+1 < len(xList)):
+		neighbors.append(Point(xList[x+1], yList[y]))
+		if (y > 0):
+			neighbors.append(Point(xList[x+1], yList[y-1]))
+		if (y+1 < len(yList)):
+			neighbors.append(Point(xList[x+1], yList[y+1]))
+
+	if (y > 0):
+		neighbors.append(Point(xList[x], yList[y-1]))
+	if (y+1 < len(yList)):
+		neighbors.append(Point(xList[x], yList[y+1]))
+
+	return neighbors
+
+
+
 #Returns a tuple that estimates the x and y location of the transciever using
 #search data
 #tloc (tuple): original location of the transmitter
@@ -370,12 +414,13 @@ def crawling_search(tloc, myloc, theta, radius = .3, stepsize = 0.1, steps = 5, 
 	bestGuess = []
 
 	pointsList = fillPointsList(xlim = (-2,2), ylim = (-1,1), xPoints=100, yPoints=50)
+	xList, yList = getXYVals(xlim = (-2,2), ylim = (-1,1), xPoints=100, yPoints=50)
+
 	interval = 1
-	samples = 20
+	samples = 50
 	m = calc_magnetic_moment()
 
 	for i in range(steps):
-		del bestGuess[:]
 		(x,y) = myloc
 		searchx.append(x)
 		searchy.append(y)
@@ -387,37 +432,69 @@ def crawling_search(tloc, myloc, theta, radius = .3, stepsize = 0.1, steps = 5, 
 			slope = (y-searchy[i-1])/(x-searchx[i-1])
 			slopeList.append(slope)
 
-		if (i > 4):
+		if (i > 3): #for every step
 			for degree in range(0, 180, interval):
-				#sample the points
+				#check (#sample) points
+				del bestGuess[:]
 				for count in range(0, samples):
-					testPoint = pointsList[int(random.rand()*len(pointsList))]
-					(testx, testy, testr) = getTestVals(searchloc)
+					testPoint = pointsList[int(random.random()*len(pointsList))]
+					#print ("Test x: %.4f, y: %.4f" % (testPoint.x, testPoint.y))
+					testloc = np.array([testPoint.x,testPoint.y])
+					error = 0
+					#test every point
+					for k in range(0, len(slopeList)):
+						(testslope, testr) = getTestVals(testloc, myloc=np.array([searchx[k], searchy[k]]), theta=degree, m=m)
+						error += math.sqrt((slopeList[k] - testslope)**2 + (r[k] - testr)**2)
+					storeGuess(bestGuess, error, testPoint, degree)
 
-				testloc = np.array([p.x,p.y])
-				error = 0
-				for k in range(1, len(slopeList)):
-					#location is the searchx and searchy
-					searchloc = np.array([searchx[k], searchy[k]])
-					(testx, testy) = field(testloc, myloc=searchloc, theta=degree, m=m)
+				#take the lowest guess and crawl from there (e,p,d)
+				errormin, crawlstart, d = bestGuess[0]
+				print ("Lowest! x: %.4f, y: %.4f, error: %.2f" % (crawlstart.x, crawlstart.y, errormin))
 
-					#find the distance between test and search location k
-					testr = distance(searchloc, testloc)
-					testslope = testy/testx
+				while (True): #some condition
+					#check bounds of the x and y
+					x = xList.tolist().index(crawlstart.x)
+					y = yList.tolist().index(crawlstart.y)
 
-					#need to compare testy/testx with slope at last location
-					#using RMSE 
-					error += math.sqrt((slopeList[k] - testslope)**2 + (r[k] - testr)**2)
+					#compute the error at all the neighbors
+					neighbors = findNeighbors(x,y, xList, yList)
+					print ("(%.4f, %.4f)" %(xList[x], yList[y]))
+					del bestGuess[:]
+					for p in neighbors:
+						print ("(%.4f, %.4f)" %(p.x, p.y))
+						testloc = np.array([p.x,p.y])
+						error = 0
+						#test every point
+						for k in range(0, len(slopeList)):
+							(testslope, testr) = getTestVals(testloc, myloc=np.array([searchx[k], searchy[k]]), theta=degree, m=m)
+							error += math.sqrt((slopeList[k] - testslope)**2 + (r[k] - testr)**2)
+						storeGuess(bestGuess, error, p, degree)
 
-				if (i > 1):
-				    storeGuess(bestGuess, error, p, degree)
+					newmin, newcrawl, d = bestGuess[0]
+					print ("New: x: %.4f, y: %.4f, error: %.2f" % (newcrawl.x, newcrawl.y, newmin))
+					print ("Old: x: %.4f, y: %.4f, error: %.2f" % (crawlstart.x, crawlstart.y, errormin))
+					if (newmin >= errormin):
+						break
+					crawlstart = newcrawl
+					errormin = newmin
+					#print ("x: %.4f, y: %.4f, error: %.2f" % (newcrawl.x, newcrawl.y, newmin))
+
+				print
+				print ("x: %.4f, y: %.4f, error: %.2f" % (newcrawl.x, newcrawl.y, errormin))
+				print
+
+
+
+
+
+
 				    #print ("x: %.4f, y: %.4f, error: %.2f" % (p.x, p.y, error))
-		if dist < radius:
-			break 
-		myloc = step(tloc, myloc=myloc, theta=theta, stepsize=stepsize)
+	# 	if dist < radius:
+	# 		break 
+	 	myloc = step(tloc, myloc=myloc, theta=theta, stepsize=stepsize)
 
-	if visualize:
-		drawplot(tloc, searchx=searchx, searchy=searchy, pointsList=pointsList, bestGuess=bestGuess)
+	# if visualize:
+	# 	drawplot(tloc, searchx=searchx, searchy=searchy, pointsList=pointsList, bestGuess=bestGuess)
 
 	return findAvg(bestGuess, i)
 
@@ -427,7 +504,7 @@ def crawling_search(tloc, myloc, theta, radius = .3, stepsize = 0.1, steps = 5, 
 #conducts the search with source-finding analysis at each step
 #def main():
 i = 0
-trials = 40
+trials = 1
 avgDistance = np.zeros(trials) 
 
 while (i < trials):
@@ -449,7 +526,7 @@ while (i < trials):
     myloc = np.array([startx, starty])
 
     # Perform a search
-    xguess, yguess = tiered_search(tloc, myloc=myloc, theta=theta)
+    xguess, yguess = crawling_search(tloc, myloc=myloc, theta=theta)
     
     #redo iteration if not enough steps
     if (xguess == 3 and yguess == 3):
