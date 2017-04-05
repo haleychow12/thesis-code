@@ -199,6 +199,16 @@ def drawplot(tloc, searchx, searchy, pointsList, bestGuess):
 
 	    plt.show()
 
+def quickdrawplot(tloc, theta, bestGuess):
+	m = calc_magnetic_moment()
+	plot_field(tloc, theta, m, xlim = (-2, 2), ylim = (-1, 1), n = 100)
+	#draws the top 4 guesses and places the source at their average
+	for e,p,d in bestGuess:
+	    plt.annotate("*", (p.x, p.y))
+	plt.annotate("o", (tloc[0], tloc[1]))
+	plt.xlim([-2, 2])
+	plt.ylim([-1, 1])
+	plt.show()
 
 def fillPointsList(xlim, ylim, xPoints, yPoints):
 	pointsList = []
@@ -414,8 +424,8 @@ def crawling_search(tloc, myloc, theta, radius = .3, stepsize = 0.1, steps = 5, 
 	slopeList = []
 	bestGuess = []
 
-	pointsList = fillPointsList(xlim = (-2,2), ylim = (-1,1), xPoints=100, yPoints=50)
-	xList, yList = getXYVals(xlim = (-2,2), ylim = (-1,1), xPoints=100, yPoints=50)
+	pointsList = fillPointsList(xlim = (-2,2), ylim = (-2,2), xPoints=100, yPoints=100)
+	xList, yList = getXYVals(xlim = (-2,2), ylim = (-2,2), xPoints=100, yPoints=100)
 
 	interval = 1
 	samples = 50
@@ -437,7 +447,6 @@ def crawling_search(tloc, myloc, theta, radius = .3, stepsize = 0.1, steps = 5, 
 			del bestGuess[:]
 			for degree in range(0, 180, interval):
 				#check (#sample) points
-				#del bestGuess[:]
 				errormin = sys.maxint
 				for count in range(0, samples):
 					testPoint = pointsList[int(random.random()*len(pointsList))]
@@ -451,11 +460,6 @@ def crawling_search(tloc, myloc, theta, radius = .3, stepsize = 0.1, steps = 5, 
 					if (error < errormin):
 						errormin = error
 						crawlstart = testPoint
-					#storeGuess(bestGuess, error, testPoint, degree)
-
-				#take the lowest guess and crawl from there (e,p,d)
-				#errormin, crawlstart, d = bestGuess[0]
-				print ("Lowest! x: %.4f, y: %.4f, error: %.2f" % (crawlstart.x, crawlstart.y, errormin))
 
 				newmin = sys.maxint
 				while (True): #some condition
@@ -465,11 +469,7 @@ def crawling_search(tloc, myloc, theta, radius = .3, stepsize = 0.1, steps = 5, 
 
 					#compute the error at all the neighbors
 					neighbors = findNeighbors(x,y, xList, yList)
-					print ("(%.4f, %.4f)" %(xList[x], yList[y]))
-					
-
 					for p in neighbors:
-						print ("(%.4f, %.4f)" %(p.x, p.y))
 						testloc = np.array([p.x,p.y])
 						error = 0
 						#test every point
@@ -483,30 +483,15 @@ def crawling_search(tloc, myloc, theta, radius = .3, stepsize = 0.1, steps = 5, 
 							newcrawl = p
 
 					#check against old errormin value
-					print ("New: x: %.4f, y: %.4f, error: %.2f" % (newcrawl.x, newcrawl.y, newmin))
-					print ("Old: x: %.4f, y: %.4f, error: %.2f" % (crawlstart.x, crawlstart.y, errormin))
 					if (newmin >= errormin):
 						break
 					crawlstart = newcrawl
 					errormin = newmin
-					#print ("x: %.4f, y: %.4f, error: %.2f" % (newcrawl.x, newcrawl.y, newmin))
 
-				print
-				print ("x: %.4f, y: %.4f, error: %.2f" % (newcrawl.x, newcrawl.y, errormin))
-				print
-
-
-
-
-
-
-				    #print ("x: %.4f, y: %.4f, error: %.2f" % (p.x, p.y, error))
-	# 	if dist < radius:
-	# 		break 
 	 	myloc = step(tloc, myloc=myloc, theta=theta, stepsize=stepsize)
 
-	# if visualize:
-	# 	drawplot(tloc, searchx=searchx, searchy=searchy, pointsList=pointsList, bestGuess=bestGuess)
+	if visualize:
+		quickdrawplot(tloc, theta, bestGuess)
 
 	return findAvg(bestGuess, i)
 
@@ -514,52 +499,44 @@ def crawling_search(tloc, myloc, theta, radius = .3, stepsize = 0.1, steps = 5, 
 
 ####################################################################   
 #conducts the search with source-finding analysis at each step
-#def main():
-i = 0
-trials = 1
-avgDistance = np.zeros(trials) 
+def main():
+	i = 0
+	trials = 100
+	avgDistance = np.zeros(trials) 
 
-while (i < trials):
-	#set the beginning parameters
-    theta = int(random.random()*180)
-    sourcex = random.random()*4 - 2
-    sourcey = random.random()*2 - 1
+	while (i < trials):
+		#set the beginning parameters
+		#x: 1.2203, y: 0.8413, theta: 72
+	    theta = int(random.random()*180)
+	    sourcex = random.random()*4 - 2
+	    sourcey = random.random()*2 - 1
 
-    # Define a transmitter
-    tloc = np.array([sourcex, sourcey])
+	    # Define a transmitter
+	    tloc = np.array([sourcex, sourcey])
 
-    #Determine random starting location for searcher
-    startx = 1
-    starty = 0
+	    #Determine random starting location for searcher
+	    startx = 1
+	    starty = 0
 
-    #print ("x: %.4f, y: %.4f, theta: %d" % (sourcex, sourcey, theta))
+	    print ("x: %.4f, y: %.4f, theta: %d" % (sourcex, sourcey, theta))
 
-    # Define a searcher
-    myloc = np.array([startx, starty])
+	    # Define a searcher
+	    myloc = np.array([startx, starty])
 
-    # Perform a search
-    xguess, yguess = crawling_search(tloc, myloc=myloc, theta=theta)
-    
-    #redo iteration if not enough steps
-    if (xguess == 3 and yguess == 3):
-        print("redoing iteration") #if error is too large, might want to add additional step?
-        continue
+	    # Perform a search
+	    xguess, yguess = crawling_search(tloc, myloc=myloc, theta=theta)
+	    
+	    #redo iteration if not enough steps
+	    if (xguess == 3 and yguess == 3):
+	        print("redoing iteration") #if error is too large, might want to add additional step?
+	        continue
 
-    avgDistance[i] = math.sqrt((sourcex - xguess)**2 + (sourcey - yguess)**2)
-    print("Distance between the guess and source is %.4f" % avgDistance[i])
-    i += 1
+	    avgDistance[i] = math.sqrt((sourcex - xguess)**2 + (sourcey - yguess)**2)
+	    print("Distance between the guess and source is %.4f" % avgDistance[i])
+	    i += 1
 
-    print ("x: %.4f, y: %.4f, theta: %d" % (sourcex, sourcey, theta))
+	print ("Avg Distance: %.4f" % (np.mean(avgDistance)))
 
-print ("Avg Distance: %.4f" % (np.mean(avgDistance)))
-
-
-
-#need to make an actual algorithm, sample x random points? take the smallest
-#and crawl from there?
-
-#do a general search with much fewer points, refine the search in that sector
-#add more points
 
 
 
