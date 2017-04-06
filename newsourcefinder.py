@@ -8,6 +8,16 @@ import math
 import matplotlib.pyplot as plt
 import sys
 
+"""the magnetic field strength of an avalanche transceiver is 
+required to be between 0.5 uA/m and 2.16 uA/m at a distance of 10m
+
+the magnetic field vector (in uA/m) at a given location.
+
+                1     3 r (m * r)        m
+        H(x) = ---- ( -----------  -  ------- ) A/m (Wikipedia: Magnetic Dipole)
+               4*pi     ||r||^5       ||r||^3
+"""
+
 #Point class, each point is represented by an x value, and y value
 #The point class also contains an array that has an error value 
 #at some sample theta
@@ -140,7 +150,7 @@ def storeGuess(bestGuess, error, p, degree):
 def findAvg(bestGuess, stepNumber):
 	avgx = 0
 	avgy = 0
-	errorThreshold = 1
+	errorThreshold = .75
 
 	for e,p,d in bestGuess:
 	    print("Best Guesses x: %.4f, y: %.4f, error: %.2f, degree: %d" % (p.x, p.y, e, d))
@@ -507,7 +517,7 @@ def main():
 	while (i < trials):
 		#set the beginning parameters
 		#x: 1.2203, y: 0.8413, theta: 72
-	    theta = int(random.random()*180)
+	    theta = random.random()*180
 	    sourcex = random.random()*4 - 2
 	    sourcey = random.random()*2 - 1
 
@@ -518,13 +528,13 @@ def main():
 	    startx = 1
 	    starty = 0
 
-	    print ("x: %.4f, y: %.4f, theta: %d" % (sourcex, sourcey, theta))
+	    print ("x: %.4f, y: %.4f, theta: %.2f" % (sourcex, sourcey, theta))
 
 	    # Define a searcher
 	    myloc = np.array([startx, starty])
 
 	    # Perform a search
-	    xguess, yguess = crawling_search(tloc, myloc=myloc, theta=theta)
+	    xguess, yguess = crawling_search(tloc, myloc=myloc, theta=theta, visualize=True)
 	    
 	    #redo iteration if not enough steps
 	    if (xguess == 3 and yguess == 3):
