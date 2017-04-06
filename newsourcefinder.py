@@ -211,13 +211,13 @@ def drawplot(tloc, searchx, searchy, pointsList, bestGuess):
 
 def quickdrawplot(tloc, theta, bestGuess):
 	m = calc_magnetic_moment()
-	plot_field(tloc, theta, m, xlim = (-2, 2), ylim = (-1, 1), n = 100)
+	plot_field(tloc, theta, m, xlim = (-20, 20), ylim = (-10, 10), n = 1000)
 	#draws the top 4 guesses and places the source at their average
 	for e,p,d in bestGuess:
 	    plt.annotate("*", (p.x, p.y))
 	plt.annotate("o", (tloc[0], tloc[1]))
-	plt.xlim([-2, 2])
-	plt.ylim([-1, 1])
+	plt.xlim([-20, 20])
+	plt.ylim([-10, 10])
 	plt.show()
 
 def fillPointsList(xlim, ylim, xPoints, yPoints):
@@ -426,7 +426,7 @@ def tiered_search(tloc, myloc, theta, radius = .3, stepsize = 0.1, steps = 5, vi
 	return findAvg(bestGuess, i)
 
 #visualize : boolean that determines whether plots are drawn
-def crawling_search(tloc, myloc, theta, radius = .3, stepsize = 0.1, steps = 5, visualize = False):
+def crawling_search(tloc, myloc, theta, radius = .3, stepsize = 0.1, steps = 6, visualize = False):
 	searchx = []
 	searchy = []
 	r = []
@@ -434,8 +434,10 @@ def crawling_search(tloc, myloc, theta, radius = .3, stepsize = 0.1, steps = 5, 
 	slopeList = []
 	bestGuess = []
 
-	pointsList = fillPointsList(xlim = (-2,2), ylim = (-2,2), xPoints=100, yPoints=100)
-	xList, yList = getXYVals(xlim = (-2,2), ylim = (-2,2), xPoints=100, yPoints=100)
+	#Accuracy, within .1 on x: (-2,2) y:(-1,1) with 100 xpoints and 100 ypoints
+	# ~1.08 on x:(-20, 20) y:(-10, 10) with 500 xpoints and 500ypoints
+	pointsList = fillPointsList(xlim = (-20,20), ylim = (-10,10), xPoints=500, yPoints=500)
+	xList, yList = getXYVals(xlim = (-20,20), ylim = (-10,10), xPoints=500, yPoints=500)
 
 	interval = 1
 	samples = 50
@@ -453,7 +455,7 @@ def crawling_search(tloc, myloc, theta, radius = .3, stepsize = 0.1, steps = 5, 
 			slope = (y-searchy[i-1])/(x-searchx[i-1])
 			slopeList.append(slope)
 
-		if (i > 3): #for every step
+		if (i > 4): #for every step
 			del bestGuess[:]
 			for degree in range(0, 180, interval):
 				#check (#sample) points
@@ -518,14 +520,14 @@ def main():
 		#set the beginning parameters
 		#x: 1.2203, y: 0.8413, theta: 72
 	    theta = random.random()*180
-	    sourcex = random.random()*4 - 2
-	    sourcey = random.random()*2 - 1
+	    sourcex = random.random()*40 - 20
+	    sourcey = random.random()*20 - 10
 
 	    # Define a transmitter
 	    tloc = np.array([sourcex, sourcey])
 
 	    #Determine random starting location for searcher
-	    startx = 1
+	    startx = 10
 	    starty = 0
 
 	    print ("x: %.4f, y: %.4f, theta: %.2f" % (sourcex, sourcey, theta))
@@ -534,7 +536,7 @@ def main():
 	    myloc = np.array([startx, starty])
 
 	    # Perform a search
-	    xguess, yguess = crawling_search(tloc, myloc=myloc, theta=theta, visualize=True)
+	    xguess, yguess = crawling_search(tloc, myloc=myloc, theta=theta)
 	    
 	    #redo iteration if not enough steps
 	    if (xguess == 3 and yguess == 3):
