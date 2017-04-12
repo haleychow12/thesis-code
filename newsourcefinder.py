@@ -25,10 +25,11 @@ class Point:
     def __init__(self, xvalue, yvalue):
         self.x = xvalue
         self.y = yvalue
-        self.error = []
+        self.error = (-1,-1)
 
     def setError(self, e, degree):
-        self.error.append((e, degree))
+        #self.error.append((e, degree))
+        self.error = (e, degree)
 
 #rotates x and y around 0,0 by theta radians
 def rotate(x, y, T):
@@ -130,7 +131,7 @@ def storeGuess(bestGuess, error, p, degree):
 
     #append if list is too short
     #errorList.append((error, p, degree))
-    p.setError(error, degree)
+    #p.setError(error, degree)
     count = len(bestGuess)
 
     if count < bestGuessLength:
@@ -225,9 +226,10 @@ def fillPointsList(xlim, ylim, xPoints, yPoints):
 	pixelX = np.linspace(xlim[0], xlim[1], xPoints)
 	pixelY = np.linspace(ylim[0], ylim[1], yPoints)
 
-	for px in pixelX:
-		for py in pixelY:
-			pointsList.append(Point(px, py))
+	for i in range(0, len(pixelX)):
+		pointsList.append([])
+		for j in range(0, len(pixelY)):
+			pointsList[i].append(Point(pixelX[i], pixelY[j]))
 
 	return pointsList
 
@@ -251,25 +253,27 @@ def getTestVals(tloc, myloc, theta, m):
 
 	return testslope, testr
 
-def findNeighbors(x, y, xList, yList):
+def findNeighbors(x, y, pointsList):
 	neighbors = []
+	lenx = len(pointsList)
+	leny = len(pointsList[0])
 	if (x > 0):
-		neighbors.append(Point(xList[x-1],yList[y]))
+		neighbors.append(pointsList[x-1][y])
 		if (y > 0):
-			neighbors.append(Point(xList[x-1], yList[y-1]))
-		if (y+1 < len(yList)):
-			neighbors.append(Point(xList[x-1], yList[y+1]))
-	if (x+1 < len(xList)):
-		neighbors.append(Point(xList[x+1], yList[y]))
+			neighbors.append(pointsList[x-1][y-1])
+		if (y+1 < leny):
+			neighbors.append(pointsList[x-1][y+1])
+	if (x+1 < lenx):
+		neighbors.append(pointsList[x+1][y])
 		if (y > 0):
-			neighbors.append(Point(xList[x+1], yList[y-1]))
-		if (y+1 < len(yList)):
-			neighbors.append(Point(xList[x+1], yList[y+1]))
+			neighbors.append(pointsList[x+1][y-1])
+		if (y+1 < leny):
+			neighbors.append(pointsList[x+1][y+1])
 
 	if (y > 0):
-		neighbors.append(Point(xList[x], yList[y-1]))
-	if (y+1 < len(yList)):
-		neighbors.append(Point(xList[x], yList[y+1]))
+		neighbors.append(pointsList[x][y-1])
+	if (y+1 < leny):
+		neighbors.append(pointsList[x][y+1])
 
 	return neighbors
 
@@ -426,7 +430,7 @@ def tiered_search(tloc, myloc, theta, radius = .3, stepsize = 0.1, steps = 5, vi
 	return findAvg(bestGuess, i)
 
 #visualize : boolean that determines whether plots are drawn
-def crawling_search(tloc, myloc, theta, radius = .3, stepsize = 0.1, steps = 6, visualize = False):
+def crawling_search(tloc, myloc, theta, radius = .3, stepsize = 0.2, steps = 7, visualize = False):
 	searchx = []
 	searchy = []
 	r = []
@@ -449,19 +453,25 @@ def crawling_search(tloc, myloc, theta, radius = .3, stepsize = 0.1, steps = 6, 
 		searchy.append(y)
 		dist = distance(myloc, tloc)
 		r.append(dist)
+		#plt.annotate("x", (x,y))
 
 		if (i > 0):
 			#solve for the slope
 			slope = (y-searchy[i-1])/(x-searchx[i-1])
 			slopeList.append(slope)
 
-		if (i > 4): #for every step
+		if (i > 5): #for every step
 			del bestGuess[:]
 			for degree in range(0, 180, interval):
+				#errorList = np.zeros(len(pointsList)) 
+
 				#check (#sample) points
 				errormin = sys.maxint
 				for count in range(0, samples):
-					testPoint = pointsList[int(random.random()*len(pointsList))]
+					testxIndex = int(random.random()*len(pointsList))
+					testyIndex = int(random.random()*len(pointsList[0]))
+					testPoint = pointsList[testxIndex][testyIndex]
+
 					#print ("Test x: %.4f, y: %.4f" % (testPoint.x, testPoint.y))
 					testloc = np.array([testPoint.x,testPoint.y])
 					error = 0
@@ -469,6 +479,8 @@ def crawling_search(tloc, myloc, theta, radius = .3, stepsize = 0.1, steps = 6, 
 					for k in range(0, len(slopeList)):
 						(testslope, testr) = getTestVals(testloc, myloc=np.array([searchx[k], searchy[k]]), theta=degree, m=m)
 						error += math.sqrt((slopeList[k] - testslope)**2 + (r[k] - testr)**2)
+					pointsList[testxIndex][testyIndex].setError(error, degree)
+
 					if (error < errormin):
 						errormin = error
 						crawlstart = testPoint
@@ -480,15 +492,20 @@ def crawling_search(tloc, myloc, theta, radius = .3, stepsize = 0.1, steps = 6, 
 					y = yList.tolist().index(crawlstart.y)
 
 					#compute the error at all the neighbors
-					neighbors = findNeighbors(x,y, xList, yList)
+					neighbors = findNeighbors(x, y, pointsList)
 					for p in neighbors:
 						testloc = np.array([p.x,p.y])
-						error = 0
-						#test every point
-						for k in range(0, len(slopeList)):
-							(testslope, testr) = getTestVals(testloc, myloc=np.array([searchx[k], searchy[k]]), theta=degree, m=m)
-							error += math.sqrt((slopeList[k] - testslope)**2 + (r[k] - testr)**2)
-						storeGuess(bestGuess, error, p, degree)
+						e,d = p.error
+						if (d == degree):
+							error = e
+						else:
+							error = 0
+							#test every point
+							for k in range(0, len(slopeList)):
+								(testslope, testr) = getTestVals(testloc, myloc=np.array([searchx[k], searchy[k]]), theta=degree, m=m)
+								error += math.sqrt((slopeList[k] - testslope)**2 + (r[k] - testr)**2)
+							p.setError(error, degree)
+							storeGuess(bestGuess, error, p, degree)
 						#store the values from neighbor with smallest error
 						if (error < newmin):
 							newmin = error 
@@ -503,7 +520,9 @@ def crawling_search(tloc, myloc, theta, radius = .3, stepsize = 0.1, steps = 6, 
 	 	myloc = step(tloc, myloc=myloc, theta=theta, stepsize=stepsize)
 
 	if visualize:
-		quickdrawplot(tloc, theta, bestGuess)
+		#quickdrawplot(tloc, theta, bestGuess)
+		e,p,d = bestGuess[0]
+		quickdrawplot(np.array([p.x, p.y]), d, bestGuess)
 
 	return findAvg(bestGuess, i)
 
@@ -519,6 +538,7 @@ def main():
 	while (i < trials):
 		#set the beginning parameters
 		#x: 1.2203, y: 0.8413, theta: 72
+		#x: -15.0966, y: 3.7125, theta: 16.73
 	    theta = random.random()*180
 	    sourcex = random.random()*40 - 20
 	    sourcey = random.random()*20 - 10
@@ -527,8 +547,8 @@ def main():
 	    tloc = np.array([sourcex, sourcey])
 
 	    #Determine random starting location for searcher
-	    startx = 10
-	    starty = 0
+	    startx = 15
+	    starty = -7.5
 
 	    print ("x: %.4f, y: %.4f, theta: %.2f" % (sourcex, sourcey, theta))
 
@@ -548,6 +568,8 @@ def main():
 	    i += 1
 
 	print ("Avg Distance: %.4f" % (np.mean(avgDistance)))
+
+	   
 
 
 
