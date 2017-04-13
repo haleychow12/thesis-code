@@ -151,6 +151,7 @@ def storeGuess(bestGuess, error, p, degree):
 def findAvg(bestGuess, stepNumber):
 	avgx = 0
 	avgy = 0
+
 	errorThreshold = .75
 
 	for e,p,d in bestGuess:
@@ -300,11 +301,10 @@ def findRandomNeighbor(x, y, pointsList):
 		neighbors.append(pointsList[x][y+1])
 
 	rand = random.random()*len(neighbors)
-	return neighbors[int(rand)]
 
-def findNext(startloc, T): #need to check bounds
-	direction = random.random()*math.pi
-	return np.array([(startloc[0] + (T*math.cos(direction))), (startloc[1] + (T*math.sin(direction)))])
+	#print "oldpoint: (%.4f, %.4f)" % (pointsList[x][y].x,pointsList[x][y].y)
+	#print "newpoint: (%.4f, %.4f)" % (neighbors[int(rand)].x,neighbors[int(rand)].y)
+	return neighbors[int(rand)]
 
 
 #Returns a tuple that estimates the x and y location of the transciever using
@@ -564,7 +564,8 @@ def annealing_search(tloc, myloc, theta, radius = .3, stepsize = .2, steps = 6, 
 	pointsList = fillPointsList(xlim = (-20,20), ylim = (-10,10), xPoints=500, yPoints=500)
 	xList, yList = getXYVals(xlim = (-20,20), ylim = (-10,10), xPoints=500, yPoints=500)
 
-	interval = 1
+	interval = 2
+	samples = 50
 	m = calc_magnetic_moment()
 
 	for i in range(steps):
@@ -583,21 +584,29 @@ def annealing_search(tloc, myloc, theta, radius = .3, stepsize = .2, steps = 6, 
 		if (i > 4): #for every step
 			for degree in range(0, 180, interval):
 				#annealing parameters
-				Tzero = 500
+				#print degree
+				Tzero = 1000
 				T = Tzero
-				jmax = 	500
-				errormax = .05
+				alpha = .9
+				jmax = 	5000
+				errormax = .02
 
-				startxIndex = int(random.random()*len(pointsList))
-				startyIndex = int(random.random()*len(pointsList[0]))
-				startPoint = pointsList[startxIndex][startyIndex]
-				startloc = np.array([startPoint.x, startPoint.y])
+				errormin = sys.maxint
+				for count in range(0, samples):
+					startxIndex = int(random.random()*len(pointsList))
+					startyIndex = int(random.random()*len(pointsList[0]))
+					testPoint = pointsList[startxIndex][startyIndex]
+					testloc = np.array([testPoint.x, testPoint.y])
 
-				#get cost of initial point
-				olderror = 0
-				for k in range(0, len(slopeList)):
-					(testslope, testr) = getTestVals(startloc, myloc=np.array([searchx[k], searchy[k]]), theta=degree, m=m)
-					olderror += math.sqrt((slopeList[k] - testslope)**2 + (r[k] - testr)**2)
+					#get cost of initial point
+					olderror = 0
+					for k in range(0, len(slopeList)):
+						(testslope, testr) = getTestVals(testloc, myloc=np.array([searchx[k], searchy[k]]), theta=degree, m=m)
+						olderror += math.sqrt((slopeList[k] - testslope)**2 + (r[k] - testr)**2)
+
+					if (olderror < errormin):
+						errormin = olderror
+						startPoint = testPoint
 
 				j = 1
 				while j <= jmax and olderror > errormax:
@@ -620,18 +629,23 @@ def annealing_search(tloc, myloc, theta, radius = .3, stepsize = .2, steps = 6, 
 
 					#don't want to store same guess more than once
 
-					delta = olderror - nexterror
-					if delta > 0:
+					delta = nexterror - olderror
+					if delta < 0:
 						startPoint = nextPoint
 						olderror = nexterror
 					else:
-						p = math.exp(delta/T)
+						#print ("%.4f/%.4f" % (-delta, T))
+						p = math.exp(-delta/T)
+						#print ("%.4f > %.4f, go to with prob p: %.4f" % (nexterror, olderror, p))
+						#print p
 						if (random.random() < p):
 							startPoint = nextPoint
 							olderror = nexterror
 
-					T = Tzero/math.log(1+j)
+					T = T*alpha
 					j += 1
+
+
 		myloc = step(tloc, myloc=myloc, theta=theta, stepsize=stepsize)
 
 	if visualize:
@@ -654,9 +668,9 @@ while (i < trials):
 	#set the beginning parameters
 	#x: 1.2203, y: 0.8413, theta: 72
 	#x: -15.0966, y: 3.7125, theta: 16.73
-    theta = 16.73#random.random()*180
-    sourcex = -15.0966#random.random()*40 - 20
-    sourcey = 3.7125#random.random()*20 - 10
+    theta = random.random()*180
+    sourcex = random.random()*40 - 20
+    sourcey = random.random()*20 - 10
 
     # Define a transmitter
     tloc = np.array([sourcex, sourcey])
