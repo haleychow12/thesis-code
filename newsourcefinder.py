@@ -277,6 +277,34 @@ def findNeighbors(x, y, pointsList):
 
 	return neighbors
 
+def findRandomNeighbor(x, y, pointsList):
+	neighbors = []
+	lenx = len(pointsList)
+	leny = len(pointsList[0])
+	if (x > 0):
+		neighbors.append(pointsList[x-1][y])
+		if (y > 0):
+			neighbors.append(pointsList[x-1][y-1])
+		if (y+1 < leny):
+			neighbors.append(pointsList[x-1][y+1])
+	if (x+1 < lenx):
+		neighbors.append(pointsList[x+1][y])
+		if (y > 0):
+			neighbors.append(pointsList[x+1][y-1])
+		if (y+1 < leny):
+			neighbors.append(pointsList[x+1][y+1])
+
+	if (y > 0):
+		neighbors.append(pointsList[x][y-1])
+	if (y+1 < leny):
+		neighbors.append(pointsList[x][y+1])
+
+	rand = random.random()*len(neighbors)
+	return neighbors[int(rand)]
+
+def findNext(startloc, T): #need to check bounds
+	direction = random.random()*math.pi
+	return np.array([(startloc[0] + (T*math.cos(direction))), (startloc[1] + (T*math.sin(direction)))])
 
 
 #Returns a tuple that estimates the x and y location of the transciever using
@@ -443,7 +471,7 @@ def crawling_search(tloc, myloc, theta, radius = .3, stepsize = 0.2, steps = 7, 
 	pointsList = fillPointsList(xlim = (-20,20), ylim = (-10,10), xPoints=500, yPoints=500)
 	xList, yList = getXYVals(xlim = (-20,20), ylim = (-10,10), xPoints=500, yPoints=500)
 
-	interval = 1
+	interval = 2
 	samples = 50
 	m = calc_magnetic_moment()
 
@@ -460,7 +488,7 @@ def crawling_search(tloc, myloc, theta, radius = .3, stepsize = 0.2, steps = 7, 
 			slope = (y-searchy[i-1])/(x-searchx[i-1])
 			slopeList.append(slope)
 
-		if (i > 5): #for every step
+		if (i > 4): #for every step
 			del bestGuess[:]
 			for degree in range(0, 180, interval):
 				#errorList = np.zeros(len(pointsList)) 
@@ -526,50 +554,137 @@ def crawling_search(tloc, myloc, theta, radius = .3, stepsize = 0.2, steps = 7, 
 
 	return findAvg(bestGuess, i)
 
+def annealing_search(tloc, myloc, theta, radius = .3, stepsize = .2, steps = 6, visualize = False):
+	searchx = []
+	searchy = []
+	r = []
+	slopeList = []
+	bestGuess = []
+
+	pointsList = fillPointsList(xlim = (-20,20), ylim = (-10,10), xPoints=500, yPoints=500)
+	xList, yList = getXYVals(xlim = (-20,20), ylim = (-10,10), xPoints=500, yPoints=500)
+
+	interval = 1
+	m = calc_magnetic_moment()
+
+	for i in range(steps):
+		(x,y) = myloc
+		searchx.append(x)
+		searchy.append(y)
+		dist = distance(myloc, tloc)
+		r.append(dist)
+		#plt.annotate("x", (x,y))
+
+		if (i > 0):
+			#solve for the slope
+			slope = (y-searchy[i-1])/(x-searchx[i-1])
+			slopeList.append(slope)
+
+		if (i > 4): #for every step
+			for degree in range(0, 180, interval):
+				#annealing parameters
+				Tzero = 500
+				T = Tzero
+				jmax = 	500
+				errormax = .05
+
+				startxIndex = int(random.random()*len(pointsList))
+				startyIndex = int(random.random()*len(pointsList[0]))
+				startPoint = pointsList[startxIndex][startyIndex]
+				startloc = np.array([startPoint.x, startPoint.y])
+
+				#get cost of initial point
+				olderror = 0
+				for k in range(0, len(slopeList)):
+					(testslope, testr) = getTestVals(startloc, myloc=np.array([searchx[k], searchy[k]]), theta=degree, m=m)
+					olderror += math.sqrt((slopeList[k] - testslope)**2 + (r[k] - testr)**2)
+
+				j = 1
+				while j <= jmax and olderror > errormax:
+					x = xList.tolist().index(startPoint.x)
+					y = yList.tolist().index(startPoint.y)
+
+					#compute the error at all the neighbors
+					nextPoint =  findRandomNeighbor(x,y, pointsList)#choose random neighbor
+					e,d = nextPoint.error
+					if (d == degree):
+						nexterror = e
+					else: 
+						nextloc = np.array([nextPoint.x, nextPoint.y])
+						nexterror = 0
+						for k in range(0, len(slopeList)):
+							(testslope, testr) = getTestVals(nextloc, myloc=np.array([searchx[k], searchy[k]]), theta=degree, m=m)
+							nexterror += math.sqrt((slopeList[k] - testslope)**2 + (r[k] - testr)**2)
+						nextPoint.setError(nexterror,degree)
+						storeGuess(bestGuess, nexterror, nextPoint, degree)
+
+					#don't want to store same guess more than once
+
+					delta = olderror - nexterror
+					if delta > 0:
+						startPoint = nextPoint
+						olderror = nexterror
+					else:
+						p = math.exp(delta/T)
+						if (random.random() < p):
+							startPoint = nextPoint
+							olderror = nexterror
+
+					T = Tzero/math.log(1+j)
+					j += 1
+		myloc = step(tloc, myloc=myloc, theta=theta, stepsize=stepsize)
+
+	if visualize:
+		#quickdrawplot(tloc, theta, bestGuess)
+		e,p,d = bestGuess[0]
+		quickdrawplot(np.array([p.x, p.y]), d, bestGuess)
+
+	return findAvg(bestGuess, i)
+
 
 
 ####################################################################   
 #conducts the search with source-finding analysis at each step
-def main():
-	i = 0
-	trials = 100
-	avgDistance = np.zeros(trials) 
+#def main():
+i = 0
+trials = 10
+avgDistance = np.zeros(trials) 
 
-	while (i < trials):
-		#set the beginning parameters
-		#x: 1.2203, y: 0.8413, theta: 72
-		#x: -15.0966, y: 3.7125, theta: 16.73
-	    theta = random.random()*180
-	    sourcex = random.random()*40 - 20
-	    sourcey = random.random()*20 - 10
+while (i < trials):
+	#set the beginning parameters
+	#x: 1.2203, y: 0.8413, theta: 72
+	#x: -15.0966, y: 3.7125, theta: 16.73
+    theta = 16.73#random.random()*180
+    sourcex = -15.0966#random.random()*40 - 20
+    sourcey = 3.7125#random.random()*20 - 10
 
-	    # Define a transmitter
-	    tloc = np.array([sourcex, sourcey])
+    # Define a transmitter
+    tloc = np.array([sourcex, sourcey])
 
-	    #Determine random starting location for searcher
-	    startx = 15
-	    starty = -7.5
+    #Determine random starting location for searcher
+    startx = 15
+    starty = -7.5
 
-	    print ("x: %.4f, y: %.4f, theta: %.2f" % (sourcex, sourcey, theta))
+    print ("x: %.4f, y: %.4f, theta: %.2f" % (sourcex, sourcey, theta))
 
-	    # Define a searcher
-	    myloc = np.array([startx, starty])
+    # Define a searcher
+    myloc = np.array([startx, starty])
 
-	    # Perform a search
-	    xguess, yguess = crawling_search(tloc, myloc=myloc, theta=theta)
-	    
-	    #redo iteration if not enough steps
-	    if (xguess == 3 and yguess == 3):
-	        print("redoing iteration") #if error is too large, might want to add additional step?
-	        continue
+    # Perform a search
+    xguess, yguess = annealing_search(tloc, myloc=myloc, theta=theta)
+    
+    #redo iteration if not enough steps
+    if (xguess == 3 and yguess == 3):
+        print("redoing iteration") #if error is too large, might want to add additional step?
+        continue
 
-	    avgDistance[i] = math.sqrt((sourcex - xguess)**2 + (sourcey - yguess)**2)
-	    print("Distance between the guess and source is %.4f" % avgDistance[i])
-	    i += 1
+    avgDistance[i] = math.sqrt((sourcex - xguess)**2 + (sourcey - yguess)**2)
+    print("Distance between the guess and source is %.4f" % avgDistance[i])
+    i += 1
 
-	print ("Avg Distance: %.4f" % (np.mean(avgDistance)))
+print ("Avg Distance: %.4f" % (np.mean(avgDistance)))
 
-	   
+   
 
 
 

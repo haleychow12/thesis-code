@@ -1,3 +1,5 @@
+4 neighbors rather than 8
+
 x: 14.2024, y: 3.6592, theta: 1.62
 Best Guesses x: 14.7094, y: 3.5471, error: 2.65, degree: 179
 error too large
