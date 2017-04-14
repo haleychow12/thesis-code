@@ -306,6 +306,18 @@ def findRandomNeighbor(x, y, pointsList):
 	#print "newpoint: (%.4f, %.4f)" % (neighbors[int(rand)].x,neighbors[int(rand)].y)
 	return neighbors[int(rand)]
 
+#normalize the slope error
+def snorm(error):
+	if (error > 20):
+		return 1
+	return error/20
+
+#normalize the distance error
+def dnorm(error):
+	if (error > 10):
+		return 1
+	return error/10
+
 
 #Returns a tuple that estimates the x and y location of the transciever using
 #search data
@@ -532,6 +544,7 @@ def crawling_search(tloc, myloc, theta, radius = .3, stepsize = 0.2, steps = 7, 
 							for k in range(0, len(slopeList)):
 								(testslope, testr) = getTestVals(testloc, myloc=np.array([searchx[k], searchy[k]]), theta=degree, m=m)
 								error += math.sqrt((slopeList[k] - testslope)**2 + (r[k] - testr)**2)
+								#4*the slope part might help
 							p.setError(error, degree)
 							storeGuess(bestGuess, error, p, degree)
 						#store the values from neighbor with smallest error
@@ -554,7 +567,7 @@ def crawling_search(tloc, myloc, theta, radius = .3, stepsize = 0.2, steps = 7, 
 
 	return findAvg(bestGuess, i)
 
-def annealing_search(tloc, myloc, theta, tzero, radius = .3, stepsize = .2, steps = 6, visualize = False):
+def annealing_search(tloc, myloc, theta, const, radius = .3, stepsize = .2, steps = 6, visualize = False):
 	searchx = []
 	searchy = []
 	r = []
@@ -564,9 +577,11 @@ def annealing_search(tloc, myloc, theta, tzero, radius = .3, stepsize = .2, step
 	pointsList = fillPointsList(xlim = (-20,20), ylim = (-10,10), xPoints=500, yPoints=500)
 	xList, yList = getXYVals(xlim = (-20,20), ylim = (-10,10), xPoints=500, yPoints=500)
 
-	interval = 5
+	interval = 2
 	samples = 50
 	m = calc_magnetic_moment()
+	serrorList = []
+	derrorList = []
 
 	for i in range(steps):
 		(x,y) = myloc
@@ -585,10 +600,10 @@ def annealing_search(tloc, myloc, theta, tzero, radius = .3, stepsize = .2, step
 			for degree in range(0, 180, interval):
 				#annealing parameters
 				#print degree
-				T = tzero
+				T = 9000 
 				alpha = .9
 				jmax = 	5000
-				errormax = .02
+				errormax = .00001
 
 				errormin = sys.maxint
 				for count in range(0, samples):
@@ -599,9 +614,17 @@ def annealing_search(tloc, myloc, theta, tzero, radius = .3, stepsize = .2, step
 
 					#get cost of initial point
 					olderror = 0
+					slopeerror = 0
+					disterror = 0
 					for k in range(0, len(slopeList)):
 						(testslope, testr) = getTestVals(testloc, myloc=np.array([searchx[k], searchy[k]]), theta=degree, m=m)
-						olderror += math.sqrt((slopeList[k] - testslope)**2 + (r[k] - testr)**2)
+						#olderror += math.sqrt((slopeList[k] - testslope)**2 + (r[k] - testr)**2)
+						slopeerror += (slopeList[k] - testslope)**2
+						disterror += (r[k] - testr)**2
+					olderror = math.sqrt(const*snorm(slopeerror) + dnorm(disterror))
+					#print ("slope error: %.4f, dist error: %.4f" % (slopeerrorr, disterror))
+					# serrorList.append(slopeerror)
+					# derrorList.append(disterror)
 					pointsList[startxIndex][startyIndex].setError(olderror, degree)
 
 
@@ -622,9 +645,18 @@ def annealing_search(tloc, myloc, theta, tzero, radius = .3, stepsize = .2, step
 					else: 
 						nextloc = np.array([nextPoint.x, nextPoint.y])
 						nexterror = 0
+						slopeerror = 0
+						disterror = 0
 						for k in range(0, len(slopeList)):
 							(testslope, testr) = getTestVals(nextloc, myloc=np.array([searchx[k], searchy[k]]), theta=degree, m=m)
-							nexterror += math.sqrt((slopeList[k] - testslope)**2 + (r[k] - testr)**2)
+							#nexterror += math.sqrt((slopeList[k] - testslope)**2 + (r[k] - testr)**2)
+							slopeerror += (slopeList[k] - testslope)**2
+							disterror += (r[k] - testr)**2
+						#print ("(%.4f, %.4f): slope error: %.4f, dist error: %.4f" % (nextPoint.x, nextPoint.y, snorm(slopeerrorr), snorm(disterror)))
+						nexterror = math.sqrt(const*snorm(slopeerror) + dnorm(disterror))
+						#serrorList.append(slopeerror)
+						#derrorList.append(disterror)
+
 						nextPoint.setError(nexterror,degree)
 						storeGuess(bestGuess, nexterror, nextPoint, degree)
 
@@ -654,20 +686,30 @@ def annealing_search(tloc, myloc, theta, tzero, radius = .3, stepsize = .2, step
 		e,p,d = bestGuess[0]
 		quickdrawplot(np.array([p.x, p.y]), d, bestGuess)
 
+	# print ("AVGS")
+	# print (sum(serrorList)/len(serrorList))
+	# print (sum(derrorList)/len(derrorList))
 	return findAvg(bestGuess, i)
+
 
 
 
 ####################################################################   
 #conducts the search with source-finding analysis at each step
 #def main():
-iterations = 15
-tstepsize = 200
-xarray = np.arange(1,iterations+1)*tstepsize
+iterations = 9
+estepsize = 2
+xarray = np.zeros(iterations)
+start = .0625
+for i in range(0,len(xarray)):
+ 	xarray[i] = start
+ 	start = float(start * estepsize)
+
+#print xarray
 yarray = np.zeros(iterations)
 
-for j in range(0,iterations):
-	print j
+for j in range(iterations):
+	print xarray[j]
 	i = 0
 	trials = 40
 	avgDistance = np.zeros(trials) 
@@ -692,7 +734,7 @@ for j in range(0,iterations):
 	    myloc = np.array([startx, starty])
 
 	    # Perform a search
-	    xguess, yguess = annealing_search(tloc, myloc=myloc, theta=theta, tzero=(xarray[j]))
+	    xguess, yguess = annealing_search(tloc, myloc=myloc, theta=theta, const=xarray[j])
 	    
 	    #redo iteration if not enough steps
 	    if (xguess == 3 and yguess == 3):

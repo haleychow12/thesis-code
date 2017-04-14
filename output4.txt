@@ -1,60 +1,846 @@
-x: -0.8620, y: -0.6274, theta: 36
-Best Guesses x: -0.9091, y: -0.3878, error: 0.02, degree: 134
-Taken 5 steps
-Source guess: -0.9091, -0.3878
-Distance between the guess and source is 0.2442
-x: -0.2339, y: 0.2536, theta: 131
-Best Guesses x: -0.2222, y: 0.3469, error: 0.04, degree: 18
-Taken 5 steps
-Source guess: -0.2222, 0.3469
-Distance between the guess and source is 0.0941
-x: 1.0318, y: -0.6902, theta: 23
-Best Guesses x: 0.9899, y: -0.6735, error: 0.05, degree: 20
-Taken 5 steps
-Source guess: 0.9899, -0.6735
-Distance between the guess and source is 0.0451
-x: -1.7716, y: 0.4641, theta: 105
-Best Guesses x: -1.7576, y: 0.5102, error: 0.03, degree: 104
-Taken 5 steps
-Source guess: -1.7576, 0.5102
-Distance between the guess and source is 0.0482
-x: -0.0360, y: 0.3313, theta: 26
-Best Guesses x: -0.0202, y: 0.3878, error: 0.04, degree: 22
-Taken 5 steps
-Source guess: -0.0202, 0.3878
-Distance between the guess and source is 0.0586
-x: 0.9861, y: 0.2745, theta: 148
-Taken 1 steps
-started too close
-redoing iteration
-x: 0.8410, y: 0.4125, theta: 122
-Best Guesses x: 0.6667, y: 0.3878, error: 0.09, degree: 140
-Taken 5 steps
-Source guess: 0.6667, 0.3878
-Distance between the guess and source is 0.1760
-x: -0.8582, y: 0.0386, theta: 147
-Best Guesses x: -0.8283, y: 0.3061, error: 0.04, degree: 30
-Taken 5 steps
-Source guess: -0.8283, 0.3061
-Distance between the guess and source is 0.2692
-x: 1.1299, y: -0.9823, theta: 168
-Best Guesses x: 1.3131, y: -0.9592, error: 0.09, degree: 98
-Taken 5 steps
-Source guess: 1.3131, -0.9592
-Distance between the guess and source is 0.1847
-x: 1.1181, y: -0.7763, theta: 84
-Best Guesses x: 0.8283, y: -0.7551, error: 0.24, degree: 142
-Taken 5 steps
-Source guess: 0.8283, -0.7551
-Distance between the guess and source is 0.2906
-x: -0.7478, y: 0.8685, theta: 71
-Best Guesses x: -0.7071, y: 0.9592, error: 1.11, degree: 68
-Taken 5 steps
-Source guess: -0.7071, 0.9592
-Distance between the guess and source is 0.0995
-Avg Distance: 0.1510
+annealing, every 2 degrees
 
-Parameters: 
-every 2 degrees [0,180]
-1 entries in the best guesses array
-100 x 50 points
+x: -3.9720, y: -6.9029, theta: 174.01
+Best Guesses x: -3.9679, y: -8.2365, error: 0.22, degree: 178
+Best Guesses x: -3.9679, y: -6.2325, error: 0.26, degree: 172
+Best Guesses x: -4.0481, y: -8.2365, error: 0.29, degree: 178
+Best Guesses x: -3.8878, y: -6.2325, error: 0.31, degree: 172
+Taken 6 steps
+Source guess: -3.9679, -7.2345
+Distance between the guess and source is 0.3316
+x: 1.8334, y: 3.5764, theta: 133.96
+Best Guesses x: 1.8036, y: 3.5872, error: 0.15, degree: 134
+Best Guesses x: 1.4028, y: 3.1062, error: 0.20, degree: 136
+Best Guesses x: 2.6854, y: 4.4689, error: 0.26, degree: 130
+Best Guesses x: 0.6814, y: 2.1042, error: 0.28, degree: 140
+Taken 6 steps
+Source guess: 1.6433, 3.3166
+Distance between the guess and source is 0.3219
+x: 11.1040, y: -1.5642, theta: 54.81
+Best Guesses x: 10.6212, y: -1.9439, error: 0.14, degree: 60
+Best Guesses x: 11.5832, y: -1.2224, error: 0.15, degree: 50
+Best Guesses x: 11.5832, y: -1.2625, error: 0.15, degree: 50
+Best Guesses x: 10.6212, y: -1.9840, error: 0.19, degree: 60
+Taken 6 steps
+Source guess: 11.1022, -1.6032
+Distance between the guess and source is 0.0391
+x: -7.7051, y: -0.2421, theta: 147.81
+Best Guesses x: -7.7355, y: -0.3407, error: 0.03, degree: 148
+Best Guesses x: -7.9760, y: -1.1423, error: 0.05, degree: 150
+Best Guesses x: -7.9760, y: -1.1022, error: 0.05, degree: 150
+Best Guesses x: -7.7355, y: -0.3006, error: 0.06, degree: 148
+Taken 6 steps
+Source guess: -7.8557, -0.7214
+Distance between the guess and source is 0.5024
+x: -11.2765, y: 5.5522, theta: 39.90
+Best Guesses x: -9.9800, y: 7.9158, error: 0.07, degree: 136
+Best Guesses x: -9.4188, y: 8.7976, error: 0.07, degree: 134
+Best Guesses x: -8.8577, y: 9.6393, error: 0.09, degree: 132
+Best Guesses x: -11.8236, y: 4.3487, error: 0.09, degree: 144
+Taken 6 steps
+Source guess: -10.0200, 7.6754
+Distance between the guess and source is 2.4671
+x: -11.6164, y: 0.4106, theta: 69.08
+Best Guesses x: -11.7435, y: -0.0200, error: 0.08, degree: 70
+Best Guesses x: -11.1824, y: 1.8236, error: 0.13, degree: 66
+Best Guesses x: -12.1443, y: -1.9038, error: 0.19, degree: 74
+Best Guesses x: -11.9840, y: -0.9419, error: 0.21, degree: 72
+Taken 6 steps
+Source guess: -11.7635, -0.2605
+Distance between the guess and source is 0.6871
+x: -18.2120, y: -0.9876, theta: 112.09
+Best Guesses x: -18.3166, y: -1.5431, error: 0.07, degree: 8
+Best Guesses x: -18.3166, y: -1.5030, error: 0.08, degree: 8
+Best Guesses x: -18.3166, y: -1.5832, error: 0.09, degree: 8
+Best Guesses x: -18.6373, y: -3.8677, error: 0.10, degree: 12
+Taken 6 steps
+Source guess: -18.3968, -2.1242
+Distance between the guess and source is 1.1516
+x: 1.7118, y: -0.8477, theta: 8.28
+Best Guesses x: 1.9639, y: -0.3808, error: 0.04, degree: 6
+Best Guesses x: 2.0441, y: -0.2605, error: 0.09, degree: 6
+Best Guesses x: 1.9639, y: -0.4208, error: 0.11, degree: 6
+Best Guesses x: 0.2806, y: -5.1904, error: 0.13, degree: 136
+Taken 6 steps
+Source guess: 1.5631, -1.5631
+Distance between the guess and source is 0.7307
+x: -17.3867, y: -6.0177, theta: 61.66
+Best Guesses x: -17.3547, y: -5.1503, error: 0.07, degree: 60
+Best Guesses x: -17.3547, y: -5.1102, error: 0.07, degree: 60
+Best Guesses x: -17.3547, y: -5.1904, error: 0.08, degree: 60
+Best Guesses x: -17.3547, y: -5.0701, error: 0.08, degree: 60
+Taken 6 steps
+Source guess: -17.3547, -5.1303
+Distance between the guess and source is 0.8881
+x: -19.7526, y: -5.4938, theta: 41.63
+Best Guesses x: -19.7595, y: -5.6713, error: 0.02, degree: 42
+Best Guesses x: -19.7595, y: -5.6313, error: 0.02, degree: 42
+Best Guesses x: -19.7595, y: -5.5912, error: 0.04, degree: 42
+Best Guesses x: -19.7595, y: -5.5110, error: 0.04, degree: 150
+Taken 6 steps
+Source guess: -19.7595, -5.6012
+Distance between the guess and source is 0.1076
+x: 4.6054, y: -2.5545, theta: 130.61
+Best Guesses x: 4.0481, y: -3.9479, error: 0.04, degree: 30
+Best Guesses x: 5.0902, y: -1.6232, error: 0.05, degree: 18
+Best Guesses x: 5.2505, y: -1.3828, error: 0.05, degree: 124
+Best Guesses x: 5.7315, y: -0.6613, error: 0.06, degree: 120
+Taken 6 steps
+Source guess: 5.0301, -1.9038
+Distance between the guess and source is 0.7770
+x: 12.2117, y: -2.2387, theta: 158.78
+Best Guesses x: 12.4649, y: -2.1443, error: 0.08, degree: 156
+Best Guesses x: 11.9038, y: -2.3848, error: 0.08, degree: 162
+Best Guesses x: 11.9840, y: -2.3447, error: 0.08, degree: 90
+Best Guesses x: 11.7435, y: -2.4649, error: 0.11, degree: 164
+Taken 6 steps
+Source guess: 12.0240, -2.3347
+Distance between the guess and source is 0.2108
+x: -18.8647, y: -7.1037, theta: 44.66
+Best Guesses x: -18.7976, y: -5.3106, error: 0.03, degree: 150
+Best Guesses x: -18.7976, y: -5.2705, error: 0.03, degree: 150
+Best Guesses x: -18.7976, y: -5.3507, error: 0.04, degree: 150
+Best Guesses x: -18.7174, y: -4.3086, error: 0.05, degree: 40
+Taken 6 steps
+Source guess: -18.7776, -5.0601
+Distance between the guess and source is 2.0454
+x: -7.0415, y: -8.3752, theta: 108.70
+Best Guesses x: -7.0140, y: -8.8778, error: 0.04, degree: 110
+Best Guesses x: -6.9339, y: -9.6393, error: 0.07, degree: 112
+Best Guesses x: -7.0140, y: -8.8377, error: 0.09, degree: 110
+Best Guesses x: -6.9339, y: -9.6794, error: 0.10, degree: 112
+Taken 6 steps
+Source guess: -6.9739, -9.2585
+Distance between the guess and source is 0.8859
+x: 11.2380, y: 5.6673, theta: 98.33
+Best Guesses x: 12.8657, y: 6.0321, error: 0.03, degree: 174
+Best Guesses x: 12.3848, y: 5.9519, error: 0.04, degree: 176
+Best Guesses x: 13.3467, y: 6.1122, error: 0.07, degree: 172
+Best Guesses x: 13.8277, y: 6.1523, error: 0.09, degree: 170
+Taken 6 steps
+Source guess: 13.1062, 6.0621
+Distance between the guess and source is 1.9095
+x: -9.7939, y: 0.2431, theta: 97.07
+Best Guesses x: -9.3387, y: 1.6232, error: 0.09, degree: 94
+Best Guesses x: -9.3387, y: 1.5832, error: 0.10, degree: 94
+Best Guesses x: -9.3387, y: 1.6633, error: 0.12, degree: 94
+Best Guesses x: -10.3006, y: -1.8637, error: 0.16, degree: 102
+Taken 6 steps
+Source guess: -9.5792, 0.7515
+Distance between the guess and source is 0.5519
+x: 2.7683, y: 1.7590, theta: 55.45
+Best Guesses x: -2.5251, y: -6.0721, error: 42.90, degree: 88
+error too large
+redoing iteration
+x: 6.0341, y: -0.9266, theta: 25.84
+Best Guesses x: 5.4108, y: -1.9038, error: 0.06, degree: 32
+Best Guesses x: 6.3727, y: -0.4609, error: 0.07, degree: 126
+Best Guesses x: 6.1323, y: -0.7816, error: 0.08, degree: 128
+Best Guesses x: 6.2124, y: -0.6613, error: 0.09, degree: 24
+Taken 6 steps
+Source guess: 6.0321, -0.9519
+Distance between the guess and source is 0.0254
+x: 14.7935, y: -6.5171, theta: 59.49
+Best Guesses x: 14.4689, y: -7.1543, error: 1.65, degree: 100
+error too large
+redoing iteration
+x: 13.8129, y: 5.8834, theta: 126.37
+Best Guesses x: 13.7475, y: 5.8717, error: 0.04, degree: 56
+Best Guesses x: 13.2665, y: 5.8317, error: 0.06, degree: 58
+Best Guesses x: 14.3888, y: 5.9118, error: 0.06, degree: 124
+Best Guesses x: 13.6673, y: 5.8717, error: 0.07, degree: 56
+Taken 6 steps
+Source guess: 13.7675, 5.8717
+Distance between the guess and source is 0.0468
+x: 14.8150, y: 8.4322, theta: 110.37
+Best Guesses x: 14.9499, y: 8.4369, error: 0.05, degree: 110
+Best Guesses x: 14.8697, y: 8.4369, error: 0.06, degree: 110
+Best Guesses x: 14.4689, y: 8.4369, error: 0.08, degree: 38
+Best Guesses x: 14.5491, y: 8.4369, error: 0.08, degree: 38
+Taken 6 steps
+Source guess: 14.7094, 8.4369
+Distance between the guess and source is 0.1057
+x: 19.3226, y: 4.8782, theta: 123.02
+Best Guesses x: 19.1182, y: 4.9499, error: 0.03, degree: 124
+Best Guesses x: 19.9198, y: 4.6293, error: 0.07, degree: 120
+Best Guesses x: 18.6373, y: 5.1102, error: 0.09, degree: 126
+Best Guesses x: 19.0381, y: 4.9900, error: 0.09, degree: 124
+Taken 6 steps
+Source guess: 19.1784, 4.9198
+Distance between the guess and source is 0.1501
+x: -8.0894, y: 2.0325, theta: 40.39
+Best Guesses x: -6.9339, y: 4.5090, error: 0.07, degree: 34
+Best Guesses x: -8.3768, y: 1.3026, error: 0.07, degree: 42
+Best Guesses x: -7.8958, y: 2.5050, error: 0.08, degree: 142
+Best Guesses x: -6.9339, y: 4.4689, error: 0.08, degree: 34
+Taken 6 steps
+Source guess: -7.5351, 3.1964
+Distance between the guess and source is 1.2891
+x: 9.5505, y: -7.3113, theta: 25.87
+Best Guesses x: 9.5792, y: -7.0741, error: 0.05, degree: 132
+Best Guesses x: 9.5792, y: -7.0341, error: 0.07, degree: 132
+Best Guesses x: 9.6593, y: -6.5531, error: 0.09, degree: 126
+Best Guesses x: 9.6593, y: -6.5130, error: 0.10, degree: 126
+Taken 6 steps
+Source guess: 9.6192, -6.7936
+Distance between the guess and source is 0.5223
+x: -2.1615, y: -6.4479, theta: 162.46
+Best Guesses x: -2.2044, y: -8.0762, error: 0.17, degree: 66
+Best Guesses x: -2.2044, y: -8.1162, error: 0.17, degree: 66
+Best Guesses x: -2.2044, y: -6.8737, error: 0.18, degree: 62
+Best Guesses x: -1.8036, y: -3.9078, error: 0.18, degree: 154
+Taken 6 steps
+Source guess: -2.1042, -6.7435
+Distance between the guess and source is 0.3011
+x: -15.3364, y: -7.4094, theta: 174.54
+Best Guesses x: -15.3507, y: -7.1142, error: 0.14, degree: 174
+Best Guesses x: -15.1904, y: -4.9900, error: 0.17, degree: 170
+Best Guesses x: -15.1102, y: -3.9479, error: 0.19, degree: 168
+Best Guesses x: -14.9499, y: -2.9058, error: 0.25, degree: 166
+Taken 6 steps
+Source guess: -15.1503, -4.7395
+Distance between the guess and source is 2.6764
+x: -13.4263, y: -8.1845, theta: 159.90
+Best Guesses x: -13.4269, y: -8.2365, error: 0.01, degree: 160
+Best Guesses x: -13.4269, y: -8.1964, error: 0.02, degree: 160
+Best Guesses x: -13.4269, y: -7.2345, error: 0.02, degree: 158
+Best Guesses x: -13.4269, y: -7.1944, error: 0.03, degree: 158
+Taken 6 steps
+Source guess: -13.4269, -7.7154
+Distance between the guess and source is 0.4691
+x: 6.3956, y: -8.8472, theta: 97.15
+Best Guesses x: 6.0521, y: -6.8337, error: 1.11, degree: 84
+error too large
+redoing iteration
+x: -13.0874, y: -9.5364, theta: 38.41
+Best Guesses x: -13.1062, y: -9.3186, error: 0.02, degree: 38
+Best Guesses x: -13.1062, y: -9.2786, error: 0.02, degree: 38
+Best Guesses x: -13.1062, y: -9.3587, error: 0.03, degree: 38
+Best Guesses x: -13.1062, y: -9.2385, error: 0.04, degree: 38
+Taken 6 steps
+Source guess: -13.1062, -9.2986
+Distance between the guess and source is 0.2386
+x: -12.1926, y: 0.2283, theta: 108.71
+Best Guesses x: -12.7054, y: -2.0240, error: 0.09, degree: 8
+Best Guesses x: -12.7054, y: -1.9840, error: 0.09, degree: 8
+Best Guesses x: -12.5451, y: -1.1423, error: 0.11, degree: 6
+Best Guesses x: -12.7054, y: -2.0641, error: 0.11, degree: 8
+Taken 6 steps
+Source guess: -12.6653, -1.8036
+Distance between the guess and source is 2.0862
+x: -0.3033, y: -7.3726, theta: 62.58
+Best Guesses x: -0.2806, y: -6.6733, error: 0.08, degree: 60
+Best Guesses x: -0.2806, y: -6.7134, error: 0.09, degree: 60
+Best Guesses x: -0.2806, y: -6.6333, error: 0.10, degree: 60
+Best Guesses x: -0.2806, y: -6.7535, error: 0.11, degree: 60
+Taken 6 steps
+Source guess: -0.2806, -6.6934
+Distance between the guess and source is 0.6796
+x: -6.0504, y: -7.8715, theta: 40.21
+Best Guesses x: -6.0521, y: -7.0741, error: 0.01, degree: 38
+Best Guesses x: -6.0521, y: -7.7555, error: 0.02, degree: 40
+Best Guesses x: -6.0521, y: -7.0341, error: 0.02, degree: 38
+Best Guesses x: -5.9719, y: -5.6313, error: 0.02, degree: 34
+Taken 6 steps
+Source guess: -6.0321, -6.8737
+Distance between the guess and source is 0.9979
+x: -16.8421, y: -4.1218, theta: 63.30
+Best Guesses x: -16.8737, y: -4.5090, error: 0.02, degree: 64
+Best Guesses x: -16.8737, y: -4.5491, error: 0.05, degree: 64
+Best Guesses x: -16.9539, y: -5.6313, error: 0.05, degree: 66
+Best Guesses x: -16.9539, y: -5.5912, error: 0.06, degree: 66
+Taken 6 steps
+Source guess: -16.9138, -5.0701
+Distance between the guess and source is 0.9511
+x: -3.8528, y: -4.6992, theta: 154.49
+Best Guesses x: -3.5671, y: -3.2265, error: 0.07, degree: 150
+Best Guesses x: -3.8076, y: -4.5090, error: 0.08, degree: 154
+Best Guesses x: -3.8076, y: -4.4689, error: 0.09, degree: 154
+Best Guesses x: -3.5671, y: -3.2665, error: 0.09, degree: 150
+Taken 6 steps
+Source guess: -3.6874, -3.8677
+Distance between the guess and source is 0.8478
+x: -0.0097, y: -5.5983, theta: 21.18
+Best Guesses x: 0.0401, y: -5.2705, error: 0.03, degree: 20
+Best Guesses x: 0.0401, y: -5.3106, error: 0.04, degree: 20
+Best Guesses x: -0.1202, y: -6.5932, error: 0.05, degree: 134
+Best Guesses x: -0.1202, y: -6.6333, error: 0.06, degree: 134
+Taken 6 steps
+Source guess: -0.0401, -5.9519
+Distance between the guess and source is 0.3549
+x: 9.7992, y: 7.6006, theta: 28.84
+Best Guesses x: 10.5411, y: 7.8357, error: 0.12, degree: 26
+Best Guesses x: 9.4990, y: 7.4749, error: 0.12, degree: 30
+Best Guesses x: 9.4990, y: 7.5150, error: 0.13, degree: 30
+Best Guesses x: 9.0180, y: 7.2745, error: 0.16, degree: 32
+Taken 6 steps
+Source guess: 9.6393, 7.5251
+Distance between the guess and source is 0.1769
+x: 16.8647, y: 7.3552, theta: 107.54
+Best Guesses x: 16.8737, y: 7.3547, error: 0.05, degree: 36
+Best Guesses x: 17.3547, y: 7.2745, error: 0.06, degree: 34
+Best Guesses x: 16.3126, y: 7.4349, error: 0.06, degree: 38
+Best Guesses x: 16.7936, y: 7.3547, error: 0.07, degree: 36
+Taken 6 steps
+Source guess: 16.8337, 7.3547
+Distance between the guess and source is 0.0310
+x: -12.9083, y: -6.2866, theta: 18.61
+Best Guesses x: -12.8657, y: -5.6313, error: 0.03, degree: 124
+Best Guesses x: -12.8657, y: -5.5912, error: 0.04, degree: 124
+Best Guesses x: -12.8657, y: -5.6713, error: 0.04, degree: 124
+Best Guesses x: -12.9459, y: -7.9158, error: 0.04, degree: 22
+Taken 6 steps
+Source guess: -12.8858, -6.2024
+Distance between the guess and source is 0.0872
+x: 14.1480, y: -0.3617, theta: 0.86
+Best Guesses x: 14.4689, y: -0.3006, error: 0.76, degree: 178
+error too large
+redoing iteration
+x: -11.9230, y: -3.4971, theta: 44.01
+Best Guesses x: -11.7435, y: -2.3447, error: 0.07, degree: 148
+Best Guesses x: -11.7435, y: -2.3848, error: 0.07, degree: 148
+Best Guesses x: -12.1443, y: -5.9519, error: 0.09, degree: 156
+Best Guesses x: -12.1443, y: -5.4709, error: 0.09, degree: 48
+Taken 6 steps
+Source guess: -11.9439, -4.0381
+Distance between the guess and source is 0.5413
+x: -16.1415, y: -9.7049, theta: 124.06
+Best Guesses x: -16.1523, y: -9.6393, error: 0.03, degree: 124
+Best Guesses x: -16.1523, y: -9.5992, error: 0.04, degree: 124
+Best Guesses x: -16.1523, y: -9.6794, error: 0.04, degree: 124
+Best Guesses x: -16.1523, y: -9.5190, error: 0.06, degree: 20
+Taken 6 steps
+Source guess: -16.1523, -9.6092
+Distance between the guess and source is 0.0963
+x: -14.9850, y: -9.1183, theta: 124.26
+Best Guesses x: -15.0301, y: -7.9158, error: 0.04, degree: 122
+Best Guesses x: -15.0301, y: -7.9559, error: 0.04, degree: 122
+Best Guesses x: -15.0301, y: -7.8758, error: 0.05, degree: 122
+Best Guesses x: -15.0301, y: -8.0361, error: 0.06, degree: 18
+Taken 6 steps
+Source guess: -15.0301, -7.9459
+Distance between the guess and source is 1.1733
+x: 19.7772, y: -8.3409, theta: 95.90
+Best Guesses x: 19.7595, y: -8.3166, error: 0.14, degree: 96
+Best Guesses x: 19.5992, y: -8.7976, error: 0.19, degree: 90
+Best Guesses x: 19.7595, y: -8.3567, error: 0.19, degree: 96
+Best Guesses x: 19.8397, y: -7.8357, error: 0.22, degree: 102
+Taken 6 steps
+Source guess: 19.7395, -8.3267
+Distance between the guess and source is 0.0403
+x: 9.6406, y: -9.8499, theta: 170.23
+Best Guesses x: 9.4990, y: -9.4389, error: 0.07, degree: 166
+Best Guesses x: 9.5792, y: -9.6393, error: 0.10, degree: 168
+Best Guesses x: 9.4990, y: -9.3988, error: 0.10, degree: 166
+Best Guesses x: 9.6593, y: -9.8798, error: 0.11, degree: 170
+Taken 6 steps
+Source guess: 9.5591, -9.5892
+Distance between the guess and source is 0.2732
+x: -11.0606, y: 7.3724, theta: 86.50
+Best Guesses x: -11.5030, y: 6.5531, error: 0.16, degree: 166
+Best Guesses x: -12.3046, y: 4.8297, error: 0.18, degree: 170
+Best Guesses x: -11.5030, y: 6.5932, error: 0.18, degree: 166
+Best Guesses x: -12.7856, y: 3.7074, error: 0.19, degree: 94
+Taken 6 steps
+Source guess: -12.0240, 5.4208
+Distance between the guess and source is 2.1765
+x: -16.2084, y: -2.3228, theta: 42.57
+Best Guesses x: -16.5531, y: -5.3106, error: 0.06, degree: 48
+Best Guesses x: -16.5531, y: -5.3507, error: 0.07, degree: 48
+Best Guesses x: -16.5531, y: -5.2705, error: 0.07, degree: 48
+Best Guesses x: -16.4729, y: -4.3086, error: 0.07, degree: 46
+Taken 6 steps
+Source guess: -16.5331, -5.0601
+Distance between the guess and source is 2.7565
+x: 17.2051, y: 4.8859, theta: 133.72
+Best Guesses x: 17.1142, y: 4.9098, error: 0.04, degree: 134
+Best Guesses x: 17.5952, y: 4.7896, error: 0.06, degree: 132
+Best Guesses x: 17.5150, y: 4.8297, error: 0.09, degree: 132
+Best Guesses x: 16.3126, y: 5.0301, error: 0.09, degree: 138
+Taken 6 steps
+Source guess: 17.1343, 4.8898
+Distance between the guess and source is 0.0709
+x: -10.9990, y: 1.0851, theta: 123.76
+Best Guesses x: -12.3046, y: -5.7114, error: 0.10, degree: 138
+Best Guesses x: -12.3046, y: -5.6713, error: 0.11, degree: 138
+Best Guesses x: -12.3046, y: -5.7515, error: 0.11, degree: 138
+Best Guesses x: -12.3046, y: -5.6313, error: 0.11, degree: 138
+Taken 6 steps
+Source guess: -12.3046, -5.6914
+Distance between the guess and source is 6.9011
+x: -14.8022, y: -2.3495, theta: 106.17
+Best Guesses x: -14.7896, y: -2.2645, error: 0.10, degree: 4
+Best Guesses x: -14.9499, y: -3.3467, error: 0.11, degree: 6
+Best Guesses x: -14.7896, y: -2.2244, error: 0.12, degree: 4
+Best Guesses x: -14.7896, y: -2.3046, error: 0.12, degree: 4
+Taken 6 steps
+Source guess: -14.8297, -2.5351
+Distance between the guess and source is 0.1876
+x: -5.7327, y: 8.5093, theta: 155.16
+Best Guesses x: -5.9719, y: 8.1964, error: 0.03, degree: 156
+Best Guesses x: -5.4108, y: 8.9178, error: 0.05, degree: 154
+Best Guesses x: -5.9719, y: 8.2365, error: 0.10, degree: 156
+Best Guesses x: -5.4108, y: 8.8778, error: 0.10, degree: 154
+Taken 6 steps
+Source guess: -5.6914, 8.5571
+Distance between the guess and source is 0.0632
+x: -13.4416, y: 6.5283, theta: 110.02
+Best Guesses x: -11.9840, y: 9.1984, error: 0.09, degree: 176
+Best Guesses x: -11.9840, y: 9.2385, error: 0.10, degree: 176
+Best Guesses x: -13.1062, y: 7.1944, error: 0.12, degree: 108
+Best Guesses x: -11.9038, y: 9.3186, error: 0.13, degree: 176
+Taken 6 steps
+Source guess: -12.2445, 8.7375
+Distance between the guess and source is 2.5127
+x: 17.9961, y: 9.9316, theta: 70.22
+Best Guesses x: 17.4349, y: 10.0000, error: 0.06, degree: 72
+Best Guesses x: 19.2786, y: 9.6794, error: 0.19, degree: 146
+Best Guesses x: 18.7174, y: 9.7996, error: 0.21, degree: 148
+Best Guesses x: 18.0762, y: 9.9198, error: 0.21, degree: 150
+Taken 6 steps
+Source guess: 18.3768, 9.8497
+Distance between the guess and source is 0.3893
+x: 14.1207, y: -7.9778, theta: 32.30
+Best Guesses x: 14.1483, y: -7.9559, error: 0.44, degree: 32
+Best Guesses x: 14.0681, y: -7.9960, error: 0.62, degree: 32
+Best Guesses x: 13.9880, y: -7.8357, error: 0.83, degree: 22
+error too large
+redoing iteration
+x: -9.5408, y: -2.0483, theta: 167.17
+Best Guesses x: -3.4068, y: 3.8677, error: 24.71, degree: 148
+error too large
+redoing iteration
+x: -11.5973, y: -9.1042, theta: 20.39
+Best Guesses x: -11.5832, y: -9.4389, error: 0.06, degree: 126
+Best Guesses x: -11.5832, y: -9.4790, error: 0.07, degree: 126
+Best Guesses x: -11.5832, y: -9.3988, error: 0.07, degree: 126
+Best Guesses x: -11.5832, y: -9.3587, error: 0.08, degree: 126
+Taken 6 steps
+Source guess: -11.5832, -9.4188
+Distance between the guess and source is 0.3149
+x: 16.1942, y: 1.8494, theta: 14.03
+Best Guesses x: 18.0762, y: 1.4228, error: 0.10, degree: 82
+Best Guesses x: 17.1142, y: 1.7034, error: 0.11, degree: 8
+Best Guesses x: 15.9118, y: 1.8637, error: 0.11, degree: 16
+Best Guesses x: 17.4349, y: 1.6232, error: 0.13, degree: 6
+Taken 6 steps
+Source guess: 17.1343, 1.6533
+Distance between the guess and source is 0.9603
+x: 8.5904, y: 4.3800, theta: 170.34
+Best Guesses x: 9.0982, y: 4.6293, error: 0.04, degree: 168
+Best Guesses x: 8.6974, y: 4.4289, error: 0.05, degree: 170
+Best Guesses x: 8.6172, y: 4.3888, error: 0.05, degree: 170
+Best Guesses x: 7.8958, y: 3.9880, error: 0.06, degree: 174
+Taken 6 steps
+Source guess: 8.5772, 4.3587
+Distance between the guess and source is 0.0250
+x: -9.8853, y: 9.2075, theta: 169.86
+Best Guesses x: -11.1022, y: 7.2745, error: 0.09, degree: 102
+Best Guesses x: -11.1022, y: 7.3146, error: 0.10, degree: 102
+Best Guesses x: -9.8196, y: 9.2786, error: 0.10, degree: 170
+Best Guesses x: -9.8196, y: 9.3186, error: 0.10, degree: 170
+Taken 6 steps
+Source guess: -10.4609, 8.2966
+Distance between the guess and source is 1.0775
+x: -6.4782, y: 5.1365, theta: 125.45
+Best Guesses x: -6.9339, y: 4.3086, error: 0.05, degree: 20
+Best Guesses x: -8.4569, y: 0.9419, error: 0.06, degree: 136
+Best Guesses x: -6.9339, y: 4.3487, error: 0.07, degree: 20
+Best Guesses x: -4.1283, y: 8.4770, error: 0.07, degree: 116
+Taken 6 steps
+Source guess: -6.6132, 4.5190
+Distance between the guess and source is 0.6321
+x: 10.8013, y: -2.7558, theta: 43.49
+Best Guesses x: 7.5752, y: -8.2365, error: 22.80, degree: 98
+error too large
+redoing iteration
+x: -14.3818, y: 2.5997, theta: 133.01
+Best Guesses x: -13.3467, y: 5.2305, error: 0.03, degree: 128
+Best Guesses x: -16.0721, y: -6.9539, error: 0.04, degree: 42
+Best Guesses x: -16.0721, y: -6.9138, error: 0.05, degree: 42
+Best Guesses x: -16.0721, y: -6.9940, error: 0.05, degree: 42
+Taken 6 steps
+Source guess: -15.3908, -3.9078
+Distance between the guess and source is 6.5853
+x: 3.2424, y: 3.2136, theta: 53.96
+Best Guesses x: 2.8457, y: 2.8257, error: 0.32, degree: 56
+Best Guesses x: 2.5251, y: 2.3848, error: 0.35, degree: 58
+Best Guesses x: 3.5671, y: 3.6273, error: 0.39, degree: 52
+Best Guesses x: 2.2044, y: 1.9439, error: 0.46, degree: 60
+Taken 6 steps
+Source guess: 2.7856, 2.6954
+Distance between the guess and source is 0.6908
+x: -7.9446, y: -0.6188, theta: 2.05
+Best Guesses x: -8.2164, y: -1.5030, error: 0.12, degree: 4
+Best Guesses x: -8.5371, y: -2.9459, error: 0.12, degree: 8
+Best Guesses x: -8.5371, y: -2.9860, error: 0.13, degree: 8
+Best Guesses x: -8.5371, y: -2.9058, error: 0.13, degree: 8
+Taken 6 steps
+Source guess: -8.4569, -2.5852
+Distance between the guess and source is 2.0320
+x: -10.0033, y: -7.8073, theta: 148.83
+Best Guesses x: -9.9800, y: -6.5130, error: 0.02, degree: 146
+Best Guesses x: -9.9800, y: -6.5531, error: 0.03, degree: 146
+Best Guesses x: -9.8998, y: -9.8397, error: 0.03, degree: 44
+Best Guesses x: -9.8998, y: -9.7996, error: 0.03, degree: 44
+Taken 6 steps
+Source guess: -9.9399, -8.1764
+Distance between the guess and source is 0.3744
+x: 3.0306, y: -5.4486, theta: 82.98
+Best Guesses x: 7.0140, y: -5.7916, error: 47.76, degree: 82
+error too large
+redoing iteration
+x: 19.1922, y: 0.7098, theta: 3.32
+Best Guesses x: 19.1182, y: 0.7415, error: 0.05, degree: 4
+Best Guesses x: 18.2365, y: 1.1022, error: 0.09, degree: 10
+Best Guesses x: 19.0381, y: 0.7816, error: 0.12, degree: 4
+Best Guesses x: 17.9158, y: 1.2224, error: 0.12, degree: 12
+Taken 6 steps
+Source guess: 18.5772, 0.9619
+Distance between the guess and source is 0.6647
+x: -12.8231, y: -3.9054, theta: 61.53
+Best Guesses x: -12.9459, y: -5.1102, error: 0.05, degree: 64
+Best Guesses x: -12.9459, y: -5.0701, error: 0.07, degree: 64
+Best Guesses x: -12.9459, y: -5.1503, error: 0.07, degree: 64
+Best Guesses x: -12.8657, y: -4.1483, error: 0.08, degree: 62
+Taken 6 steps
+Source guess: -12.9259, -4.8697
+Distance between the guess and source is 0.9698
+x: 1.5085, y: 5.7348, theta: 58.91
+Best Guesses x: 1.7234, y: 5.9519, error: 0.04, degree: 58
+Best Guesses x: 0.8417, y: 4.9900, error: 0.08, degree: 62
+Best Guesses x: 1.2425, y: 5.4709, error: 0.11, degree: 60
+Best Guesses x: 0.4409, y: 4.4689, error: 0.13, degree: 64
+Taken 6 steps
+Source guess: 1.0621, 5.2204
+Distance between the guess and source is 0.6811
+x: 2.9691, y: -4.2308, theta: 34.03
+Best Guesses x: 2.8457, y: -4.7495, error: 0.04, degree: 144
+Best Guesses x: 2.8457, y: -4.7094, error: 0.05, degree: 144
+Best Guesses x: 2.7655, y: -5.1102, error: 0.07, degree: 38
+Best Guesses x: 2.7655, y: -5.0701, error: 0.07, degree: 38
+Taken 6 steps
+Source guess: 2.8056, -4.9098
+Distance between the guess and source is 0.6985
+x: -9.6786, y: -8.1943, theta: 27.28
+Best Guesses x: -9.6593, y: -6.6733, error: 0.04, degree: 132
+Best Guesses x: -9.6593, y: -6.6333, error: 0.04, degree: 132
+Best Guesses x: -9.6593, y: -6.7134, error: 0.05, degree: 132
+Best Guesses x: -9.6593, y: -8.5170, error: 0.05, degree: 28
+Taken 6 steps
+Source guess: -9.6593, -7.1343
+Distance between the guess and source is 1.0602
+x: -12.0225, y: 4.0298, theta: 126.99
+Best Guesses x: -14.3086, y: -5.5511, error: 0.04, degree: 146
+Best Guesses x: -14.3086, y: -5.5110, error: 0.04, degree: 146
+Best Guesses x: -14.3086, y: -5.5912, error: 0.04, degree: 146
+Best Guesses x: -14.3086, y: -5.4709, error: 0.05, degree: 146
+Taken 6 steps
+Source guess: -14.3086, -5.5311
+Distance between the guess and source is 9.8304
+x: 8.4037, y: -3.2139, theta: 24.27
+Best Guesses x: 8.2966, y: -3.3868, error: 0.04, degree: 26
+Best Guesses x: 8.6974, y: -2.7856, error: 0.07, degree: 20
+Best Guesses x: 8.1363, y: -3.6673, error: 0.08, degree: 28
+Best Guesses x: 8.8577, y: -2.5852, error: 0.08, degree: 18
+Taken 6 steps
+Source guess: 8.4970, -3.1062
+Distance between the guess and source is 0.1425
+x: 14.4634, y: 3.7658, theta: 42.14
+Best Guesses x: 15.2705, y: 3.7876, error: 0.09, degree: 38
+Best Guesses x: 14.4689, y: 3.7475, error: 0.10, degree: 42
+Best Guesses x: 14.5491, y: 3.7876, error: 0.10, degree: 42
+Best Guesses x: 13.7475, y: 3.6673, error: 0.10, degree: 46
+Taken 6 steps
+Source guess: 14.5090, 3.7475
+Distance between the guess and source is 0.0491
+x: 17.0201, y: -2.7036, theta: 62.51
+Best Guesses x: 16.5531, y: -2.5050, error: 0.54, degree: 68
+Best Guesses x: 16.5531, y: -2.5451, error: 0.63, degree: 68
+Best Guesses x: 16.5531, y: -2.4649, error: 0.66, degree: 68
+Best Guesses x: 17.9158, y: -3.1062, error: 0.70, degree: 52
+Taken 6 steps
+Source guess: 16.8938, -2.6553
+Distance between the guess and source is 0.1353
+x: -15.3263, y: -4.4951, theta: 145.39
+Best Guesses x: -15.4309, y: -5.8717, error: 0.02, degree: 148
+Best Guesses x: -15.4309, y: -5.8317, error: 0.03, degree: 148
+Best Guesses x: -15.4309, y: -5.7916, error: 0.04, degree: 148
+Best Guesses x: -15.4309, y: -5.7515, error: 0.06, degree: 148
+Taken 6 steps
+Source guess: -15.4309, -5.8116
+Distance between the guess and source is 1.3207
+x: -0.3056, y: 1.7512, theta: 148.14
+Best Guesses x: -4.3687, y: -9.1182, error: 18.21, degree: 4
+error too large
+redoing iteration
+x: 5.5797, y: -8.8856, theta: 139.03
+Best Guesses x: 5.6513, y: -9.2786, error: 0.04, degree: 34
+Best Guesses x: 5.6513, y: -9.2385, error: 0.05, degree: 34
+Best Guesses x: 5.7315, y: -9.5992, error: 0.05, degree: 36
+Best Guesses x: 5.7315, y: -9.6393, error: 0.07, degree: 36
+Taken 6 steps
+Source guess: 5.6914, -9.4389
+Distance between the guess and source is 0.5644
+x: 19.0637, y: 9.5643, theta: 2.38
+Best Guesses x: 18.5571, y: 9.6794, error: 0.10, degree: 4
+Best Guesses x: 18.6373, y: 9.6794, error: 0.16, degree: 4
+Best Guesses x: 16.2325, y: 9.9599, error: 0.16, degree: 12
+Best Guesses x: 16.2325, y: 10.0000, error: 0.17, degree: 12
+Taken 6 steps
+Source guess: 17.4148, 9.8297
+Distance between the guess and source is 1.6701
+x: -3.8578, y: -1.0177, theta: 27.47
+Best Guesses x: -4.6894, y: -4.4289, error: 0.05, degree: 146
+Best Guesses x: -4.6894, y: -4.4289, error: 0.05, degree: 38
+Best Guesses x: -4.6894, y: -4.4689, error: 0.06, degree: 38
+Best Guesses x: -4.6894, y: -4.3888, error: 0.06, degree: 146
+Taken 6 steps
+Source guess: -4.6894, -4.4289
+Distance between the guess and source is 3.5111
+x: -16.6539, y: -1.1726, theta: 43.76
+Best Guesses x: -17.0341, y: -3.6273, error: 0.05, degree: 154
+Best Guesses x: -15.5912, y: 2.8657, error: 0.06, degree: 142
+Best Guesses x: -17.0341, y: -3.6673, error: 0.06, degree: 154
+Best Guesses x: -17.0341, y: -3.5872, error: 0.07, degree: 154
+Taken 6 steps
+Source guess: -16.6733, -2.0040
+Distance between the guess and source is 0.8316
+x: 4.8295, y: 2.5211, theta: 112.41
+Best Guesses x: 5.2505, y: 2.9459, error: 0.04, degree: 110
+Best Guesses x: 5.7315, y: 3.3868, error: 0.05, degree: 0
+Best Guesses x: 4.2084, y: 1.8236, error: 0.05, degree: 116
+Best Guesses x: 4.5291, y: 2.1844, error: 0.07, degree: 114
+Taken 6 steps
+Source guess: 4.9299, 2.5852
+Distance between the guess and source is 0.1191
+x: 14.5542, y: -2.9656, theta: 72.84
+Best Guesses x: 14.7896, y: -2.9459, error: 0.08, degree: 70
+Best Guesses x: 14.7896, y: -2.9058, error: 0.13, degree: 70
+Best Guesses x: 13.9880, y: -3.1062, error: 0.14, degree: 80
+Best Guesses x: 14.4689, y: -2.9860, error: 0.14, degree: 146
+Taken 6 steps
+Source guess: 14.5090, -2.9860
+Distance between the guess and source is 0.0495
+x: 12.7484, y: -8.7377, theta: 120.18
+Best Guesses x: 12.3046, y: -7.7154, error: 5.58, degree: 96
+error too large
+redoing iteration
+x: -19.9128, y: 9.4047, theta: 44.37
+Best Guesses x: -19.9198, y: 9.3988, error: 0.13, degree: 144
+Best Guesses x: -19.9198, y: 9.4389, error: 0.15, degree: 144
+Best Guesses x: -19.9198, y: 9.3587, error: 0.18, degree: 144
+Best Guesses x: -19.9198, y: 9.3988, error: 0.20, degree: 44
+Taken 6 steps
+Source guess: -19.9198, 9.3988
+Distance between the guess and source is 0.0092
+x: -18.2695, y: -2.7687, theta: 35.03
+Best Guesses x: -18.5571, y: -9.0782, error: 0.06, degree: 46
+Best Guesses x: -18.5571, y: -9.1182, error: 0.06, degree: 46
+Best Guesses x: -18.5571, y: -9.0381, error: 0.06, degree: 46
+Best Guesses x: -18.5571, y: -8.9980, error: 0.06, degree: 46
+Taken 6 steps
+Source guess: -18.5571, -9.0581
+Distance between the guess and source is 6.2960
+x: -9.8741, y: 0.7376, theta: 119.37
+Best Guesses x: -8.6974, y: 3.7475, error: 0.13, degree: 4
+Best Guesses x: -11.0220, y: -4.8697, error: 0.14, degree: 132
+Best Guesses x: -11.0220, y: -4.9098, error: 0.14, degree: 132
+Best Guesses x: -11.1022, y: -5.8717, error: 0.14, degree: 134
+Taken 6 steps
+Source guess: -10.4609, -2.9760
+Distance between the guess and source is 3.7597
+x: 4.8973, y: -5.0767, theta: 90.69
+Best Guesses x: 4.9299, y: -4.9499, error: 0.06, degree: 90
+Best Guesses x: 5.0100, y: -4.5892, error: 0.11, degree: 88
+Best Guesses x: 4.7695, y: -6.0321, error: 0.15, degree: 96
+Best Guesses x: 5.0902, y: -4.2285, error: 0.17, degree: 86
+Taken 6 steps
+Source guess: 4.9499, -4.9499
+Distance between the guess and source is 0.1373
+x: 13.6484, y: -4.2540, theta: 178.88
+Best Guesses x: 13.6673, y: -4.2285, error: 0.19, degree: 178
+Best Guesses x: 13.6673, y: -4.1884, error: 0.28, degree: 178
+Best Guesses x: 13.6673, y: -4.2685, error: 0.30, degree: 178
+Best Guesses x: 13.2665, y: -4.4289, error: 0.35, degree: 6
+Taken 6 steps
+Source guess: 13.5671, -4.2786
+Distance between the guess and source is 0.0849
+x: 17.9214, y: -8.7437, theta: 175.68
+Best Guesses x: 17.7555, y: -9.1583, error: 0.34, degree: 168
+Best Guesses x: 17.9960, y: -8.2365, error: 0.37, degree: 4
+Best Guesses x: 17.8357, y: -9.1984, error: 0.46, degree: 168
+Best Guesses x: 17.7555, y: -9.1984, error: 0.46, degree: 168
+Taken 6 steps
+Source guess: 17.8357, -8.9479
+Distance between the guess and source is 0.2214
+x: -18.9908, y: -0.0984, theta: 100.37
+Best Guesses x: -19.3587, y: -2.2645, error: 0.08, degree: 104
+Best Guesses x: -19.3587, y: -2.2244, error: 0.08, degree: 104
+Best Guesses x: -19.3587, y: -2.3046, error: 0.09, degree: 104
+Best Guesses x: -19.3587, y: -2.1844, error: 0.10, degree: 104
+Taken 6 steps
+Source guess: -19.3587, -2.2445
+Distance between the guess and source is 2.1774
+x: -8.6494, y: -5.7998, theta: 140.51
+Best Guesses x: -8.6172, y: -9.5992, error: 0.02, degree: 40
+Best Guesses x: -8.6974, y: -8.1162, error: 0.02, degree: 146
+Best Guesses x: -8.6974, y: -8.1563, error: 0.03, degree: 146
+Best Guesses x: -8.6172, y: -9.5591, error: 0.03, degree: 40
+Taken 6 steps
+Source guess: -8.6573, -8.8577
+Distance between the guess and source is 3.0580
+x: 16.0563, y: -6.9098, theta: 14.34
+Best Guesses x: 16.0721, y: -6.9138, error: 0.11, degree: 14
+Best Guesses x: 15.9920, y: -6.8737, error: 0.19, degree: 18
+Best Guesses x: 15.9118, y: -6.7936, error: 0.31, degree: 24
+Best Guesses x: 16.0721, y: -6.8737, error: 0.34, degree: 14
+Taken 6 steps
+Source guess: 16.0120, -6.8637
+Distance between the guess and source is 0.0639
+x: -18.5594, y: 9.0758, theta: 71.01
+Best Guesses x: -19.3587, y: 7.3146, error: 0.12, degree: 74
+Best Guesses x: -19.8397, y: 6.0721, error: 0.16, degree: 76
+Best Guesses x: -19.3587, y: 7.2745, error: 0.18, degree: 74
+Best Guesses x: -19.8397, y: 6.1122, error: 0.19, degree: 76
+Taken 6 steps
+Source guess: -19.5992, 6.6934
+Distance between the guess and source is 2.5994
+x: 0.9839, y: -3.1253, theta: 178.08
+Best Guesses x: 1.1623, y: -2.6253, error: 0.04, degree: 176
+Best Guesses x: 0.8417, y: -3.5872, error: 0.04, degree: 0
+Best Guesses x: 1.0020, y: -3.1062, error: 0.06, degree: 178
+Best Guesses x: 1.0020, y: -3.0661, error: 0.07, degree: 178
+Taken 6 steps
+Source guess: 1.0020, -3.0962
+Distance between the guess and source is 0.0343
+x: 15.5882, y: -9.9740, theta: 129.65
+Best Guesses x: 15.5912, y: -9.9599, error: 0.10, degree: 130
+Best Guesses x: 15.5912, y: -9.9198, error: 0.34, degree: 130
+Best Guesses x: 15.5912, y: -10.0000, error: 0.35, degree: 130
+Best Guesses x: 16.3928, y: -9.4389, error: 0.48, degree: 152
+Taken 6 steps
+Source guess: 15.7916, -9.8297
+Distance between the guess and source is 0.2494
+x: 9.3067, y: 0.9522, theta: 18.22
+Best Guesses x: 9.3387, y: 0.9820, error: 0.04, degree: 18
+Best Guesses x: 9.8998, y: 1.3427, error: 0.07, degree: 112
+Best Guesses x: 8.7776, y: 0.5812, error: 0.11, degree: 22
+Best Guesses x: 9.8998, y: 1.3427, error: 0.12, degree: 14
+Taken 6 steps
+Source guess: 9.4790, 1.0621
+Distance between the guess and source is 0.2044
+x: 17.6967, y: 7.3360, theta: 149.68
+Best Guesses x: 17.1142, y: 7.4349, error: 0.05, degree: 152
+Best Guesses x: 18.6373, y: 7.1142, error: 0.08, degree: 146
+Best Guesses x: 18.1563, y: 7.2345, error: 0.09, degree: 148
+Best Guesses x: 16.6333, y: 7.5150, error: 0.10, degree: 154
+Taken 6 steps
+Source guess: 17.6353, 7.3246
+Distance between the guess and source is 0.0625
+x: 0.9519, y: -3.1123, theta: 47.27
+Best Guesses x: 0.9218, y: -3.2665, error: 0.08, degree: 48
+Best Guesses x: 1.4028, y: -1.8236, error: 0.09, degree: 42
+Best Guesses x: 0.9218, y: -3.2265, error: 0.09, degree: 48
+Best Guesses x: 1.4028, y: -1.8637, error: 0.10, degree: 42
+Taken 6 steps
+Source guess: 1.1623, -2.5451
+Distance between the guess and source is 0.6050
+x: 5.7251, y: 4.9900, theta: 92.22
+Best Guesses x: 5.3307, y: 4.6693, error: 0.04, degree: 94
+Best Guesses x: 6.2124, y: 5.3507, error: 0.04, degree: 90
+Best Guesses x: 6.3727, y: 5.4709, error: 0.06, degree: 160
+Best Guesses x: 5.8116, y: 5.0701, error: 0.07, degree: 92
+Taken 6 steps
+Source guess: 5.9319, 5.1403
+Distance between the guess and source is 0.2556
+x: 11.4290, y: 2.0082, theta: 49.72
+Best Guesses x: 11.1022, y: 1.8637, error: 0.08, degree: 52
+Best Guesses x: 11.6633, y: 2.1042, error: 0.09, degree: 48
+Best Guesses x: 11.3427, y: 1.9840, error: 0.09, degree: 50
+Best Guesses x: 11.7435, y: 2.1443, error: 0.10, degree: 48
+Taken 6 steps
+Source guess: 11.4629, 2.0240
+Distance between the guess and source is 0.0374
+x: 19.2669, y: 2.7862, theta: 57.00
+Best Guesses x: 18.7174, y: 2.9860, error: 0.07, degree: 60
+Best Guesses x: 19.1182, y: 2.8657, error: 0.16, degree: 58
+Best Guesses x: 19.0381, y: 2.8657, error: 0.17, degree: 58
+Best Guesses x: 19.1182, y: 2.8257, error: 0.18, degree: 58
+Taken 6 steps
+Source guess: 18.9980, 2.8858
+Distance between the guess and source is 0.2868
+x: -2.3749, y: -2.0570, theta: 105.97
+Best Guesses x: -2.4449, y: -2.3046, error: 0.09, degree: 2
+Best Guesses x: -2.6052, y: -2.9058, error: 0.10, degree: 4
+Best Guesses x: -2.6052, y: -2.9459, error: 0.11, degree: 4
+Best Guesses x: -2.4449, y: -2.2645, error: 0.11, degree: 2
+Taken 6 steps
+Source guess: -2.5251, -2.6052
+Distance between the guess and source is 0.5684
+x: -4.4303, y: -8.9286, theta: 49.54
+Best Guesses x: -4.3687, y: -9.5591, error: 0.03, degree: 160
+Best Guesses x: -4.3687, y: -9.5992, error: 0.03, degree: 160
+Best Guesses x: -4.3687, y: -9.5190, error: 0.05, degree: 160
+Best Guesses x: -4.4489, y: -8.4770, error: 0.07, degree: 48
+Taken 6 steps
+Source guess: -4.3888, -9.2886
+Distance between the guess and source is 0.3623
+x: 5.9548, y: 7.4471, theta: 173.96
+Best Guesses x: 5.4108, y: 7.1142, error: 0.03, degree: 176
+Best Guesses x: 4.9299, y: 6.7936, error: 0.04, degree: 178
+Best Guesses x: 5.4910, y: 7.1543, error: 0.05, degree: 102
+Best Guesses x: 5.4910, y: 7.1543, error: 0.06, degree: 176
+Taken 6 steps
+Source guess: 5.3307, 7.0541
+Distance between the guess and source is 0.7375
+x: -3.4379, y: -6.8562, theta: 35.53
+Best Guesses x: -3.3267, y: -9.5591, error: 0.04, degree: 44
+Best Guesses x: -3.3267, y: -9.5190, error: 0.04, degree: 44
+Best Guesses x: -3.2465, y: -4.7495, error: 0.05, degree: 138
+Best Guesses x: -3.3267, y: -9.5992, error: 0.05, degree: 44
+Taken 6 steps
+Source guess: -3.3066, -8.3567
+Distance between the guess and source is 1.5063
+x: 13.8814, y: -0.3856, theta: 71.11
+Best Guesses x: 13.7475, y: -0.4208, error: 0.05, degree: 72
+Best Guesses x: 14.1483, y: -0.3407, error: 0.06, degree: 140
+Best Guesses x: 13.5070, y: -0.4609, error: 0.08, degree: 74
+Best Guesses x: 13.5872, y: -0.4609, error: 0.08, degree: 144
+Taken 6 steps
+Source guess: 13.7475, -0.4208
+Distance between the guess and source is 0.1384
+x: 5.8434, y: -0.9709, theta: 47.51
+Best Guesses x: 5.8116, y: -1.0621, error: 0.13, degree: 48
+Best Guesses x: 5.5711, y: -1.3828, error: 0.24, degree: 50
+Best Guesses x: 5.9719, y: -0.7014, error: 0.26, degree: 46
+Best Guesses x: 6.2124, y: -0.4208, error: 0.27, degree: 44
+Taken 6 steps
+Source guess: 5.8918, -0.8918
+Distance between the guess and source is 0.0928
+x: 19.8498, y: -8.9156, theta: 0.69
+Best Guesses x: 20.0000, y: -7.7154, error: 0.39, degree: 14
+Best Guesses x: 20.0000, y: -7.6754, error: 0.39, degree: 14
+Best Guesses x: 19.9198, y: -7.6754, error: 0.40, degree: 14
+Best Guesses x: 19.9198, y: -7.7154, error: 0.49, degree: 14
+Taken 6 steps
+Source guess: 19.9599, -7.6954
+Distance between the guess and source is 1.2251
+x: 9.2197, y: -6.3680, theta: 39.75
+Best Guesses x: 9.2585, y: -6.1924, error: 0.04, degree: 38
+Best Guesses x: 9.2585, y: -6.2325, error: 0.09, degree: 38
+Best Guesses x: 9.2585, y: -6.1523, error: 0.10, degree: 38
+Best Guesses x: 9.4188, y: -5.6313, error: 0.12, degree: 32
+Taken 6 steps
+Source guess: 9.2986, -6.0521
+Distance between the guess and source is 0.3256
+x: 10.8987, y: -6.9348, theta: 34.77
+Best Guesses x: 10.9419, y: -6.6333, error: 0.07, degree: 30
+Best Guesses x: 10.8617, y: -7.2745, error: 0.08, degree: 40
+Best Guesses x: 10.8617, y: -7.2345, error: 0.11, degree: 148
+Best Guesses x: 10.8617, y: -7.1944, error: 0.11, degree: 148
+Taken 6 steps
+Source guess: 10.8818, -7.0842
+Distance between the guess and source is 0.1503
+Avg Distance: 1.0307
+
