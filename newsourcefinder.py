@@ -697,21 +697,21 @@ def annealing_search(tloc, myloc, theta, const, radius = .3, stepsize = .2, step
 ####################################################################   
 #conducts the search with source-finding analysis at each step
 #def main():
-iterations = 9
-estepsize = 2
-xarray = np.zeros(iterations)
-start = .0625
-for i in range(0,len(xarray)):
- 	xarray[i] = start
- 	start = float(start * estepsize)
+iterations = 1
+# estepsize = 2
+# xarray = np.zeros(iterations)
+# start = .0625
+# for i in range(0,len(xarray)):
+#  	xarray[i] = start
+#  	start = float(start * estepsize)
 
-#print xarray
-yarray = np.zeros(iterations)
+# #print xarray
+# yarray = np.zeros(iterations)
 
 for j in range(iterations):
-	print xarray[j]
+	#print xarray[j]
 	i = 0
-	trials = 40
+	trials = 100
 	avgDistance = np.zeros(trials) 
 	while (i < trials):
 		#set the beginning parameters
@@ -734,7 +734,7 @@ for j in range(iterations):
 	    myloc = np.array([startx, starty])
 
 	    # Perform a search
-	    xguess, yguess = annealing_search(tloc, myloc=myloc, theta=theta, const=xarray[j])
+	    xguess, yguess = annealing_search(tloc, myloc=myloc, theta=theta, const=16)
 	    
 	    #redo iteration if not enough steps
 	    if (xguess == 3 and yguess == 3):
@@ -746,10 +746,10 @@ for j in range(iterations):
 	    i += 1
 
 	print ("Avg Distance: %.4f" % (np.mean(avgDistance)))
-	yarray[j] = np.mean(avgDistance)
+	#yarray[j] = np.mean(avgDistance)
 
-plt.plot(xarray,yarray)
-plt.show()
+# plt.plot(xarray,yarray)
+# plt.show()
 
 
    

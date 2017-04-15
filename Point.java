@@ -28,7 +28,7 @@ public class Point {
     }
 
     public static void annealingAlgorithm(Point[] searchList, double[] dirList, double[] rList){
-
+        
 
     }
 
