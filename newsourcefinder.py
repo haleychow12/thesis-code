@@ -68,10 +68,6 @@ def field(tloc, myloc, theta, m):
 	f3 = m / (r_norm ** 3)
 	f = f1 * (f2 - f3)
 
-	print f1
-	print f2
-	print f3
-
 	return f * (10 ** 6)
 
 #Plot the vector field of the transmitter (in the xy-plane).
@@ -572,7 +568,7 @@ def crawling_search(tloc, myloc, theta, radius = .3, stepsize = 0.2, steps = 7, 
 
 	return findAvg(bestGuess, i)
 
-def annealing_search(tloc, myloc, theta, const, radius = .3, stepsize = .2, steps = 6, visualize = False):
+def annealing_search(tloc, myloc, theta, radius = .3, stepsize = .2, steps = 8, visualize = False):
 	searchx = []
 	searchy = []
 	r = []
@@ -584,6 +580,7 @@ def annealing_search(tloc, myloc, theta, const, radius = .3, stepsize = .2, step
 
 	interval = 2
 	samples = 50
+	const = 16
 	m = calc_magnetic_moment()
 	serrorList = []
 	derrorList = []
@@ -592,7 +589,10 @@ def annealing_search(tloc, myloc, theta, const, radius = .3, stepsize = .2, step
 		(x,y) = myloc
 		searchx.append(x)
 		searchy.append(y)
+		print ("x: " + str(x))
+		print ("y: " + str(y))
 		dist = distance(myloc, tloc)
+		print ("dist: " + str(dist))
 		r.append(dist)
 		#plt.annotate("x", (x,y))
 
@@ -600,8 +600,9 @@ def annealing_search(tloc, myloc, theta, const, radius = .3, stepsize = .2, step
 			#solve for the slope
 			slope = (y-searchy[i-1])/(x-searchx[i-1])
 			slopeList.append(slope)
+			print("m: " + str(slope))
 
-		if (i > 4): #for every step
+		if (i > 6): #for every step
 			for degree in range(0, 180, interval):
 				#annealing parameters
 				#print degree
@@ -609,6 +610,7 @@ def annealing_search(tloc, myloc, theta, const, radius = .3, stepsize = .2, step
 				alpha = .9
 				jmax = 	5000
 				errormax = .0001
+				
 
 				errormin = sys.maxint
 				for count in range(0, samples):
@@ -701,60 +703,60 @@ def annealing_search(tloc, myloc, theta, const, radius = .3, stepsize = .2, step
 
 ####################################################################   
 #conducts the search with source-finding analysis at each step
-def main():
-	iterations = 1
-	# estepsize = 2
-	# xarray = np.zeros(iterations)
-	# start = .0625
-	# for i in range(0,len(xarray)):
-	#  	xarray[i] = start
-	#  	start = float(start * estepsize)
+#def main():
+iterations = 1
+# estepsize = 2
+# xarray = np.zeros(iterations)
+# start = .0625
+# for i in range(0,len(xarray)):
+#  	xarray[i] = start
+#  	start = float(start * estepsize)
 
-	# #print xarray
-	# yarray = np.zeros(iterations)
+# #print xarray
+# yarray = np.zeros(iterations)
 
-	for j in range(iterations):
-		#print xarray[j]
-		i = 0
-		trials = 100
-		avgDistance = np.zeros(trials) 
-		while (i < trials):
-			#set the beginning parameters
-			#x: 1.2203, y: 0.8413, theta: 72
-			#x: -15.0966, y: 3.7125, theta: 16.73
-		    theta = random.random()*180
-		    sourcex = random.random()*40 - 20
-		    sourcey = random.random()*20 - 10
+for j in range(iterations):
+	#print xarray[j]
+	i = 0
+	trials = 100
+	avgDistance = np.zeros(trials) 
+	while (i < trials):
+		#set the beginning parameters
 
-		    # Define a transmitter
-		    tloc = np.array([sourcex, sourcey])
+		#Test for java x: -14.7067, y: 1.8595, theta: 66.12
+	    theta = 66.12#random.random()*180
+	    sourcex = -14.7067#random.random()*40 - 20
+	    sourcey = 1.8595#random.random()*20 - 10
 
-		    #Determine random starting location for searcher
-		    startx = 15
-		    starty = -7.5
+	    # Define a transmitter
+	    tloc = np.array([sourcex, sourcey])
 
-		    print ("x: %.4f, y: %.4f, theta: %.2f" % (sourcex, sourcey, theta))
+	    #Determine random starting location for searcher
+	    startx = 15
+	    starty = -7.5
 
-		    # Define a searcher
-		    myloc = np.array([startx, starty])
+	    print ("x: %.4f, y: %.4f, theta: %.2f" % (sourcex, sourcey, theta))
 
-		    # Perform a search
-		    xguess, yguess = annealing_search(tloc, myloc=myloc, theta=theta, const=16)
-		    
-		    #redo iteration if not enough steps
-		    if (xguess == 3 and yguess == 3):
-		        print("redoing iteration") #if error is too large, might want to add additional step?
-		        continue
+	    # Define a searcher
+	    myloc = np.array([startx, starty])
 
-		    avgDistance[i] = math.sqrt((sourcex - xguess)**2 + (sourcey - yguess)**2)
-		    print("Distance between the guess and source is %.4f" % avgDistance[i])
-		    i += 1
+	    # Perform a search
+	    xguess, yguess = annealing_search(tloc, myloc=myloc, theta=theta)
+	    
+	    #redo iteration if not enough steps
+	    if (xguess == 3 and yguess == 3):
+	        print("redoing iteration") #if error is too large, might want to add additional step?
+	        continue
 
-		print ("Avg Distance: %.4f" % (np.mean(avgDistance)))
-		#yarray[j] = np.mean(avgDistance)
+	    avgDistance[i] = math.sqrt((sourcex - xguess)**2 + (sourcey - yguess)**2)
+	    print("Distance between the guess and source is %.4f" % avgDistance[i])
+	    i += 1
 
-	# plt.plot(xarray,yarray)
-	# plt.show()
+	print ("Avg Distance: %.4f" % (np.mean(avgDistance)))
+	#yarray[j] = np.mean(avgDistance)
+
+# plt.plot(xarray,yarray)
+# plt.show()
 
 
 	   
