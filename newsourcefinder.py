@@ -589,10 +589,7 @@ def annealing_search(tloc, myloc, theta, radius = .3, stepsize = .2, steps = 8, 
 		(x,y) = myloc
 		searchx.append(x)
 		searchy.append(y)
-		print ("x: " + str(x))
-		print ("y: " + str(y))
 		dist = distance(myloc, tloc)
-		print ("dist: " + str(dist))
 		r.append(dist)
 		#plt.annotate("x", (x,y))
 
@@ -600,7 +597,6 @@ def annealing_search(tloc, myloc, theta, radius = .3, stepsize = .2, steps = 8, 
 			#solve for the slope
 			slope = (y-searchy[i-1])/(x-searchx[i-1])
 			slopeList.append(slope)
-			print("m: " + str(slope))
 
 		if (i > 6): #for every step
 			for degree in range(0, 180, interval):
@@ -629,6 +625,7 @@ def annealing_search(tloc, myloc, theta, radius = .3, stepsize = .2, steps = 8, 
 						slopeerror += (slopeList[k] - testslope)**2
 						disterror += (r[k] - testr)**2
 					olderror = math.sqrt(const*snorm(slopeerror) + dnorm(disterror))
+
 					#print ("slope error: %.4f, dist error: %.4f" % (slopeerrorr, disterror))
 					# serrorList.append(slopeerror)
 					# derrorList.append(disterror)

@@ -115,14 +115,15 @@ public class Point {
         if (length < NUMVALS)
             NUMVALS = length;
 
+
         //calculating error on only the last NUMVALS measurements
         for (int i = 0; i < NUMVALS; i++){
-            int k = length - NUMVALS;
+            int k = length - (i+1);
             field(testPoint, searchList[k], theta, testResults);
 
             double testr = distance(testPoint, searchList[k]);
             double testslope = testResults[1]/testResults[0];
-
+            
             slopeError += (dirList[k] - testslope)*(dirList[k] - testslope);
             distError += (rList[k] - testr)*(rList[k] - testr);
         }
@@ -164,22 +165,22 @@ public class Point {
         //System.out.println(Double.toString(snorm(10)));
         //System.out.println(Double.toString(dnorm(7)));
 
-        Point[] searchList = {new Point(14.9666518861, -7.3027998395),
+        Point[] searchList = {new Point(15.0, -7.5),
+            new Point(14.9666518861, -7.3027998395),
             new Point(14.9316034054, -7.10589477608),
             new Point(14.8948381785, -6.90930287792),
             new Point(14.8563825119, -6.71303479161),
             new Point(14.8162254863, -6.51710773044),
-            new Point(14.7743985392, -6.32153107823),
-            new Point(14.7308435468, -6.12633127639)};
+            new Point(14.7743985392, -6.32153107823)};
 
         double[] dirList = {-5.91338272621, -5.61807699865,-5.34962183837,
             -5.1044730899,-4.87968382989, -4.67278364413, -4.4816860498};
 
-        double[] rList = {31.055684673, 30.9646141949, 30.8730280491,
-            30.7809257092, 30.688306624, 30.5951702165, 30.5015158843};
+        double[] rList = {31.146239984, 31.055684673, 30.9646141949, 30.8730280491,
+            30.7809257092, 30.688306624, 30.5951702165};
 
 
-        double e = calcError(66.12, new Point(-14.7067, 1.8595), searchList, dirList, rList);
+        double e = calcError(80, new Point(5, 2), searchList, dirList, rList);
         System.out.println(Double.toString(e));
         // Point [][] pointsList = fillPointsList(-20, -10, 500, 500);
 
