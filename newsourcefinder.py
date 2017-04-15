@@ -60,12 +60,17 @@ def field(tloc, myloc, theta, m):
 	m = [0, m]
 
 	r = rloc - tloc
+
 	r_norm = np.linalg.norm(r) #magnitude of the r vector
 
 	f1 = 1 / (4 * scipy.pi)
 	f2 = 3 * r * np.dot(m, r) / (r_norm ** 5) #np.dot = rx*mx + ry*my
 	f3 = m / (r_norm ** 3)
 	f = f1 * (f2 - f3)
+
+	print f1
+	print f2
+	print f3
 
 	return f * (10 ** 6)
 
@@ -603,7 +608,7 @@ def annealing_search(tloc, myloc, theta, const, radius = .3, stepsize = .2, step
 				T = 9000 
 				alpha = .9
 				jmax = 	5000
-				errormax = .00001
+				errormax = .0001
 
 				errormin = sys.maxint
 				for count in range(0, samples):
@@ -696,63 +701,63 @@ def annealing_search(tloc, myloc, theta, const, radius = .3, stepsize = .2, step
 
 ####################################################################   
 #conducts the search with source-finding analysis at each step
-#def main():
-iterations = 1
-# estepsize = 2
-# xarray = np.zeros(iterations)
-# start = .0625
-# for i in range(0,len(xarray)):
-#  	xarray[i] = start
-#  	start = float(start * estepsize)
+def main():
+	iterations = 1
+	# estepsize = 2
+	# xarray = np.zeros(iterations)
+	# start = .0625
+	# for i in range(0,len(xarray)):
+	#  	xarray[i] = start
+	#  	start = float(start * estepsize)
 
-# #print xarray
-# yarray = np.zeros(iterations)
+	# #print xarray
+	# yarray = np.zeros(iterations)
 
-for j in range(iterations):
-	#print xarray[j]
-	i = 0
-	trials = 100
-	avgDistance = np.zeros(trials) 
-	while (i < trials):
-		#set the beginning parameters
-		#x: 1.2203, y: 0.8413, theta: 72
-		#x: -15.0966, y: 3.7125, theta: 16.73
-	    theta = random.random()*180
-	    sourcex = random.random()*40 - 20
-	    sourcey = random.random()*20 - 10
+	for j in range(iterations):
+		#print xarray[j]
+		i = 0
+		trials = 100
+		avgDistance = np.zeros(trials) 
+		while (i < trials):
+			#set the beginning parameters
+			#x: 1.2203, y: 0.8413, theta: 72
+			#x: -15.0966, y: 3.7125, theta: 16.73
+		    theta = random.random()*180
+		    sourcex = random.random()*40 - 20
+		    sourcey = random.random()*20 - 10
 
-	    # Define a transmitter
-	    tloc = np.array([sourcex, sourcey])
+		    # Define a transmitter
+		    tloc = np.array([sourcex, sourcey])
 
-	    #Determine random starting location for searcher
-	    startx = 15
-	    starty = -7.5
+		    #Determine random starting location for searcher
+		    startx = 15
+		    starty = -7.5
 
-	    print ("x: %.4f, y: %.4f, theta: %.2f" % (sourcex, sourcey, theta))
+		    print ("x: %.4f, y: %.4f, theta: %.2f" % (sourcex, sourcey, theta))
 
-	    # Define a searcher
-	    myloc = np.array([startx, starty])
+		    # Define a searcher
+		    myloc = np.array([startx, starty])
 
-	    # Perform a search
-	    xguess, yguess = annealing_search(tloc, myloc=myloc, theta=theta, const=16)
-	    
-	    #redo iteration if not enough steps
-	    if (xguess == 3 and yguess == 3):
-	        print("redoing iteration") #if error is too large, might want to add additional step?
-	        continue
+		    # Perform a search
+		    xguess, yguess = annealing_search(tloc, myloc=myloc, theta=theta, const=16)
+		    
+		    #redo iteration if not enough steps
+		    if (xguess == 3 and yguess == 3):
+		        print("redoing iteration") #if error is too large, might want to add additional step?
+		        continue
 
-	    avgDistance[i] = math.sqrt((sourcex - xguess)**2 + (sourcey - yguess)**2)
-	    print("Distance between the guess and source is %.4f" % avgDistance[i])
-	    i += 1
+		    avgDistance[i] = math.sqrt((sourcex - xguess)**2 + (sourcey - yguess)**2)
+		    print("Distance between the guess and source is %.4f" % avgDistance[i])
+		    i += 1
 
-	print ("Avg Distance: %.4f" % (np.mean(avgDistance)))
-	#yarray[j] = np.mean(avgDistance)
+		print ("Avg Distance: %.4f" % (np.mean(avgDistance)))
+		#yarray[j] = np.mean(avgDistance)
 
-# plt.plot(xarray,yarray)
-# plt.show()
+	# plt.plot(xarray,yarray)
+	# plt.show()
 
 
-   
+	   
 
 
 
