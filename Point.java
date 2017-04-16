@@ -72,8 +72,8 @@ public class Point{
     private static Point[][] fillPointsList(double minx, double miny, int xPoints, int yPoints){
         Point[][] pointList = new Point[xPoints][yPoints];
 
-        double xincr = -1*(minx/(xPoints/2));
-        double yincr = -1*(miny/(yPoints/2));
+        double xincr = -1*(minx/(xPoints/2 + 1));
+        double yincr = -1*(miny/(yPoints/2 + 1));
 
         setIncrementers(xincr, yincr);
 
@@ -107,47 +107,67 @@ public class Point{
         return error/NORM;
     }
 
-    private static Point findRandomNeighbor(int x, int y, Point[][] pointsList){
+    private static Point findRandomNeighbor(int x, int y, Point[][] pointsList, int[] nextIndex){
         int counter = 0;
         Point[] neighbors = new Point[8];
+        int[] xVals = new int[8];
+        int[] yVals = new int[8];
 
         int lenx = pointsList.length;
         int leny = pointsList[0].length;
 
         if (x > 0){
             neighbors[counter] = pointsList[x-1][y];
+            xVals[counter] = x-1;
+            yVals[counter] = y;
             counter++;
             if (y > 0){
                 neighbors[counter] = pointsList[x-1][y-1];
+                xVals[counter] = x-1;
+                yVals[counter] = y-1;
                 counter++;
             }
             if (y+1 < leny){
                 neighbors[counter] = pointsList[x-1][y+1];
+                xVals[counter] = x-1;
+                yVals[counter] = y+1;
                 counter++;
             }
         }
         if (x+1 < lenx){
             neighbors[counter] = pointsList[x+1][y];
+            xVals[counter] = x+1;
+            yVals[counter] = y;
             counter++;
             if (y > 0){
                 neighbors[counter] = pointsList[x+1][y-1];
+                xVals[counter] = x+1;
+                yVals[counter] = y-1;
                 counter++;
             }
             if (y+1 < leny){
                 neighbors[counter] = pointsList[x+1][y+1];
+                xVals[counter] = x+1;
+                yVals[counter] = y+1;
                 counter++;
             }
         }
         if (y > 0){
             neighbors[counter] = pointsList[x][y-1];
+            xVals[counter] = x;
+            yVals[counter] = y-1;
             counter++;
         }
         if (y+1 < leny){
             neighbors[counter] = pointsList[x][y+1];
+            xVals[counter] = x;
+            yVals[counter] = y+1;
             counter++;
         }
 
         int random = (int) (Math.random()*counter);
+        nextIndex[0] = xVals[random];
+        nextIndex[1] = yVals[random];
         return neighbors[random];
     }
 
@@ -259,6 +279,8 @@ public class Point{
             double temp = 9000;
             double errormin = Integer.MAX_VALUE;
             double olderror = 0;
+            int[] nextIndex = new int[2];
+            int xIndex = 0; int yIndex = 0;
             //find lowest value in (sample#) of samples
             for (int count = 0; count < samples; count++){
                 int testxIndex = (int) (Math.random()*xPoints);
@@ -272,6 +294,8 @@ public class Point{
                 if (olderror < errormin){
                     errormin = olderror;
                     startPoint = testPoint;
+                    xIndex = testxIndex;
+                    yIndex = testyIndex;
                 }
             }
 
@@ -280,17 +304,12 @@ public class Point{
 
             int j = 1;
             while (j <= jmax && olderror > errormax){
-                //get indexes of this point
-
-                System.out.println("point before:" + Double.toString(startPoint.x) + "," + Double.toString(startPoint.y));
-                int x = (int) ((startPoint.x-minx)/incX);
-                int y = (int) ((startPoint.y-miny)/incY); //there's some error here
-
-                System.out.println("after" + Double.toString(pointsList[x][y].x) + "," + Double.toString(pointsList[x][y].y));
+                //System.out.println("point:" + Double.toString(startPoint.x) + "," + Double.toString(startPoint.y));
+                //System.out.println("still point:" + Double.toString(pointsList[xIndex][yIndex].x) + ", " +Double.toString(pointsList[xIndex][yIndex].y));
                 double nexterror = 0;
 
                 //get a random neighbor
-                Point nextPoint = findRandomNeighbor(x,y, pointsList);           
+                Point nextPoint = findRandomNeighbor(xIndex, yIndex, pointsList, nextIndex);           
 
                 if (nextPoint.d == degree)
                     nexterror = nextPoint.e;
@@ -309,6 +328,8 @@ public class Point{
                 if (delta < 0){
                     startPoint = nextPoint;
                     olderror = nexterror;
+                    xIndex = nextIndex[0];
+                    yIndex = nextIndex[1];
                 }
                 else{
 
@@ -317,7 +338,8 @@ public class Point{
                     if (Math.random() < p){
                         startPoint = nextPoint;
                         olderror = nexterror;
-                        
+                        xIndex = nextIndex[0];
+                        yIndex = nextIndex[1];
                     }
                 }
                 temp = temp*alpha;
@@ -359,36 +381,37 @@ public class Point{
 
         // double e = calcError(80, new Point(5, 2), searchList, dirList, rList);
         // System.out.println(Double.toString(e));
-        /*Point [][] pointsList = fillPointsList(-20, -10, 500, 500);
-        Point startPoint = new Point(-20, -10);
-        int x = (int) ((startPoint.x+20)/incX);
-        int y = (int) ((startPoint.y+10)/incY);
-        System.out.println(Integer.toString(x));
+        // Point [][] pointsList = fillPointsList(-20, -10, 500, 500);
+        // Point startPoint = new Point(19.92, 9.56);
+        // int x = (int) ((startPoint.x+20)/incX);
+        // int y = (int) ((startPoint.y+10)/incY);
+        // System.out.println(Integer.toString(x));
+        // System.out.println(Integer.toString(y));
 
-        System.out.println(Double.toString(pointsList[x][y].x) + ","
-                  + Double.toString(pointsList[x][y].y));
+        // System.out.println(Double.toString(pointsList[x][y].x) + ","
+        //           + Double.toString(pointsList[x][y].y));
 
-        findRandomNeighbor(x,y, pointsList);
+        // findRandomNeighbor(x,y, pointsList);
 
-        ArrayList <Point> bestGuess = new ArrayList<Point>();
-        storeGuess(bestGuess, .1, new Point(15, 12), 30);
-        storeGuess(bestGuess, .5, new Point(10, 12), 30);
-        storeGuess(bestGuess, .7, new Point(13, 12), 30);
-        storeGuess(bestGuess, .2, new Point(11, 12), 30);
-        storeGuess(bestGuess, .3, new Point(14, 12), 30);
-        storeGuess(bestGuess, .03, new Point(17, 12), 30);
+        // ArrayList <Point> bestGuess = new ArrayList<Point>();
+        // storeGuess(bestGuess, .1, new Point(15, 12), 30);
+        // storeGuess(bestGuess, .5, new Point(10, 12), 30);
+        // storeGuess(bestGuess, .7, new Point(13, 12), 30);
+        // storeGuess(bestGuess, .2, new Point(11, 12), 30);
+        // storeGuess(bestGuess, .3, new Point(14, 12), 30);
+        // storeGuess(bestGuess, .03, new Point(17, 12), 30);
 
-        for (int i = 0; i < bestGuess.size(); i++){
-            System.out.println(Double.toString(bestGuess.get(i).x) + "," + Double.toString(bestGuess.get(i).y));
-        }*/
+        // for (int i = 0; i < bestGuess.size(); i++){
+        //     System.out.println(Double.toString(bestGuess.get(i).x) + "," + Double.toString(bestGuess.get(i).y));
+        // }
 
-        /*for (int i = 0; i < 500; i++){
-            for (int j = 0; j < 500; j++){
-                System.out.println(Double.toString(pointsList[i][j].x) + ","
-                 + Double.toString(pointsList[i][j].y));
-            }
+        // for (int i = 0; i < 500; i++){
+        //     for (int j = 0; j < 500; j++){
+        //         System.out.println(Double.toString(pointsList[i][j].x) + ","
+        //          + Double.toString(pointsList[i][j].y));
+        //     }
 
-        }*/
+        // }
 
         //double[] results = new double[2];
 
