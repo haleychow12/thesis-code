@@ -144,6 +144,8 @@ def storeGuess(bestGuess, error, p, degree):
         bestGuess.sort(key = lambda t: t[0])
         del bestGuess[count]
 
+    print "Source: %.4f, %.4f, Error: %.4f, Degree: %d" % (p.x,p.y,error, degree);
+
 #xguess, yguess = findAvg(bestGuess)
 #Calculates the average of the bestGuess array and prints findings
 #bestGuess (list of tuples): list of points with the smallest error value
@@ -664,6 +666,8 @@ def annealing_search(tloc, myloc, theta, radius = .3, stepsize = .2, steps = 8, 
 						nextPoint.setError(nexterror,degree)
 						storeGuess(bestGuess, nexterror, nextPoint, degree)
 
+					#print str(nextPoint.x) + "," + str(nextPoint.y) + ", error: " + str(nexterror)
+
 					#don't want to store same guess more than once
 
 					delta = nexterror - olderror
@@ -680,6 +684,7 @@ def annealing_search(tloc, myloc, theta, radius = .3, stepsize = .2, steps = 8, 
 							olderror = nexterror
 
 					T = T*alpha
+					print T
 					j += 1
 
 
@@ -715,7 +720,7 @@ iterations = 1
 for j in range(iterations):
 	#print xarray[j]
 	i = 0
-	trials = 100
+	trials = 1
 	avgDistance = np.zeros(trials) 
 	while (i < trials):
 		#set the beginning parameters

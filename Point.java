@@ -1,12 +1,12 @@
 import java.util.*;
-public class Point {
+public class Point{
     //Cartesian stuff will be done in this class
     //magnetic moment 
     private static final double MOMENT = 0.02714336053;
+    private static double incX, incY;
 
-    private double x, y;
-    private double e;
-    int d;
+    private double x, y, e;
+    private int d;
     public Point(double xPoint, double yPoint){
         this.x = xPoint;
         this.y = yPoint;
@@ -16,6 +16,11 @@ public class Point {
     private void setError(double e, int degree){
         this.e = e;
         this.d = degree;
+    }
+
+    private static void setIncrementers(double xincr, double yincr){
+        incX = xincr;
+        incY = yincr;
     }
 
 
@@ -69,6 +74,9 @@ public class Point {
 
         double xincr = -1*(minx/(xPoints/2));
         double yincr = -1*(miny/(yPoints/2));
+
+        setIncrementers(xincr, yincr);
+
         double x = minx;
         double y = miny;
         
@@ -97,6 +105,104 @@ public class Point {
         if (error > NORM)
             return 1;
         return error/NORM;
+    }
+
+    private static Point findRandomNeighbor(int x, int y, Point[][] pointsList){
+        int counter = 0;
+        Point[] neighbors = new Point[8];
+
+        int lenx = pointsList.length;
+        int leny = pointsList[0].length;
+
+        if (x > 0){
+            neighbors[counter] = pointsList[x-1][y];
+            counter++;
+            if (y > 0){
+                neighbors[counter] = pointsList[x-1][y-1];
+                counter++;
+            }
+            if (y+1 < leny){
+                neighbors[counter] = pointsList[x-1][y+1];
+                counter++;
+            }
+        }
+        if (x+1 < lenx){
+            neighbors[counter] = pointsList[x+1][y];
+            counter++;
+            if (y > 0){
+                neighbors[counter] = pointsList[x+1][y-1];
+                counter++;
+            }
+            if (y+1 < leny){
+                neighbors[counter] = pointsList[x+1][y+1];
+                counter++;
+            }
+        }
+        if (y > 0){
+            neighbors[counter] = pointsList[x][y-1];
+            counter++;
+        }
+        if (y+1 < leny){
+            neighbors[counter] = pointsList[x][y+1];
+            counter++;
+        }
+
+        int random = (int) (Math.random()*counter);
+        return neighbors[random];
+    }
+
+    private static void storeGuess(ArrayList<Point> bestGuess, double error, Point p, int degree){
+        int bestGuessLength = 4;
+        int count = bestGuess.size();
+        Point point;
+
+        if (count < bestGuessLength || error < bestGuess.get(count-1).e){
+            point = new Point(p.x, p.y);
+            point.setError(error, degree);
+            bestGuess.add(point);
+
+            // Sorting
+            Collections.sort(bestGuess, new Comparator<Point>() {
+                @Override
+                public int compare(Point a, Point b)
+                {
+                    if (a.e > b.e)
+                        return 1;
+                    if (a.e == b.e)
+                        return 0;
+                    else 
+                        return -1;
+                }
+            });
+
+            if (count+1 > bestGuessLength)
+                bestGuess.remove(count);
+        }
+        //System.out.println(String.format("Source: %.4f, %.4f, Error: %.4f, Degree: %d", p.x,p.y,error, degree));
+
+    }
+
+    private static Point findAvg(ArrayList<Point> bestGuess){
+        double avgx = 0;
+        double avgy = 0;
+
+        double errorThreshold = .75; //really need to change this, like 3?
+        Point ret;
+
+        for (Point p: bestGuess){
+            avgx += p.x;
+            avgy += p.y;
+
+            if (p.e > errorThreshold){
+                System.out.println("Error is too large");
+                return null;
+            }
+        }
+
+        double xguess = avgx/bestGuess.size();
+        double yguess = avgy/bestGuess.size();
+
+        return new Point(xguess, yguess);
     }
 
     //calculate the error with a transmitter at testPoint oriented in the direction theta
@@ -130,34 +236,101 @@ public class Point {
         return Math.sqrt(SLOPE_MULTIPLIER*snorm(slopeError) + dnorm(distError));
     }
 
-    public static void annealingAlgorithm(Point[] searchList, double[] dirList, double[] rList){
+    public static Point annealingAlgorithm(Point[] searchList, double[] dirList, double[] rList){
         ArrayList<Point> bestGuess = new ArrayList<Point>();
-        double minx = -40;
-        double miny = -20;
+        double minx = -20;
+        double miny = -10;
         int xPoints = 500;
         int yPoints = 500;
         Point[][] pointsList = fillPointsList(minx, miny, xPoints, yPoints);
 
         int interval = 2;
         int samples = 50;
+        Point startPoint = null;
 
         //set annealing constants
         double alpha = .9;
         int jmax = 5000;
         double errormax = .0001;
 
+
+        //run this for some discretized amt of rotations
         for (int degree = 0; degree < 180; degree += interval){
-            double T = 9000;
+            double temp = 9000;
             double errormin = Integer.MAX_VALUE;
+            double olderror = 0;
+            //find lowest value in (sample#) of samples
             for (int count = 0; count < samples; count++){
                 int testxIndex = (int) (Math.random()*xPoints);
                 int testyIndex = (int) (Math.random()*yPoints);
                 Point testPoint = pointsList[testxIndex][testyIndex];
 
-                double error = calcError(degree, testPoint, searchList, dirList, rList);
+                olderror = calcError(degree, testPoint, searchList, dirList, rList);
+                pointsList[testxIndex][testyIndex].setError(olderror, degree);
+
+                //switch out values if olderror is less than current min
+                if (olderror < errormin){
+                    errormin = olderror;
+                    startPoint = testPoint;
+                }
+            }
+
+            //System.out.println(String.format("Source: %.4f, %.4f, Error: %.4f, Degree: %d", 
+            //startPoint.x, startPoint.y, startPoint.e, startPoint.d));
+
+            int j = 1;
+            while (j <= jmax && olderror > errormax){
+                //get indexes of this point
+
+                System.out.println("point before:" + Double.toString(startPoint.x) + "," + Double.toString(startPoint.y));
+                int x = (int) ((startPoint.x-minx)/incX);
+                int y = (int) ((startPoint.y-miny)/incY); //there's some error here
+
+                System.out.println("after" + Double.toString(pointsList[x][y].x) + "," + Double.toString(pointsList[x][y].y));
+                double nexterror = 0;
+
+                //get a random neighbor
+                Point nextPoint = findRandomNeighbor(x,y, pointsList);           
+
+                if (nextPoint.d == degree)
+                    nexterror = nextPoint.e;
+                else {
+                    //calculate error
+                    nexterror = calcError(degree, nextPoint, searchList, dirList, rList);
+                    nextPoint.setError(nexterror, degree);
+                    storeGuess(bestGuess, nexterror, nextPoint, degree);
+                }
+
+                //System.out.println(String.format("Source: %.4f, %.4f, Error: %.4f, Degree: %d", 
+                //nextPoint.x, nextPoint.y, nextPoint.e, nextPoint.d));
+
+                //simulated annealing
+                double delta = nexterror - olderror;
+                if (delta < 0){
+                    startPoint = nextPoint;
+                    olderror = nexterror;
+                }
+                else{
+
+                    double p = Math.exp(-delta/temp);
+                    //System.out.println(Double.toString(p));
+                    if (Math.random() < p){
+                        startPoint = nextPoint;
+                        olderror = nexterror;
+                        
+                    }
+                }
+                temp = temp*alpha;
+                //System.out.println("temp: " + Double.toString(temp));
+                j+=1;
             }
         }
+        for (int i = 0; i < bestGuess.size(); i++){
+            System.out.println(String.format("Guess: %.4f, %.4f, Error: %.4f, Degree: %d", 
+            bestGuess.get(i).x, bestGuess.get(i).y, bestGuess.get(i).e, bestGuess.get(i).d));
 
+        }
+        return findAvg(bestGuess);
 
     }
 
@@ -179,14 +352,43 @@ public class Point {
         double[] rList = {31.146239984, 31.055684673, 30.9646141949, 30.8730280491,
             30.7809257092, 30.688306624, 30.5951702165};
 
+        Point source = annealingAlgorithm(searchList, dirList, rList);
+        System.out.println(String.format("Source: %.4f, %.4f", 
+            source.x, source.y, source.e));
 
-        double e = calcError(80, new Point(5, 2), searchList, dirList, rList);
-        System.out.println(Double.toString(e));
-        // Point [][] pointsList = fillPointsList(-20, -10, 500, 500);
 
-        // for (int i = 0; i < 500; i++){
-        //     System.out.println(Double.toString(pointsList[i][0].x));
-        // }
+        // double e = calcError(80, new Point(5, 2), searchList, dirList, rList);
+        // System.out.println(Double.toString(e));
+        /*Point [][] pointsList = fillPointsList(-20, -10, 500, 500);
+        Point startPoint = new Point(-20, -10);
+        int x = (int) ((startPoint.x+20)/incX);
+        int y = (int) ((startPoint.y+10)/incY);
+        System.out.println(Integer.toString(x));
+
+        System.out.println(Double.toString(pointsList[x][y].x) + ","
+                  + Double.toString(pointsList[x][y].y));
+
+        findRandomNeighbor(x,y, pointsList);
+
+        ArrayList <Point> bestGuess = new ArrayList<Point>();
+        storeGuess(bestGuess, .1, new Point(15, 12), 30);
+        storeGuess(bestGuess, .5, new Point(10, 12), 30);
+        storeGuess(bestGuess, .7, new Point(13, 12), 30);
+        storeGuess(bestGuess, .2, new Point(11, 12), 30);
+        storeGuess(bestGuess, .3, new Point(14, 12), 30);
+        storeGuess(bestGuess, .03, new Point(17, 12), 30);
+
+        for (int i = 0; i < bestGuess.size(); i++){
+            System.out.println(Double.toString(bestGuess.get(i).x) + "," + Double.toString(bestGuess.get(i).y));
+        }*/
+
+        /*for (int i = 0; i < 500; i++){
+            for (int j = 0; j < 500; j++){
+                System.out.println(Double.toString(pointsList[i][j].x) + ","
+                 + Double.toString(pointsList[i][j].y));
+            }
+
+        }*/
 
         //double[] results = new double[2];
 
