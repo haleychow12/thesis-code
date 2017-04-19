@@ -39,6 +39,19 @@ public class Point{
         return new Point(prime.x + rotate_point_x, prime.y + rotate_point_y);
     }
 
+    public static Point step(Point tloc, Point myloc, double theta, double stepsize){
+        //to do.
+        double lx = myloc.x;
+        double ly = myloc.y;
+        double[] results = new double[2];
+        field(tloc, myloc, theta, results);
+        double fx = results[0];
+        double fy = results[1];
+        double c = stepsize/(Math.sqrt(fx*fx + fy*fy));
+
+        return new Point(lx+c*fx, ly+c*fy);
+    }
+
     //calculates and returns the distance between two points
     private static double distance(Point a, Point b){
         return (Math.sqrt((a.x-b.x)*(a.x-b.x) + (a.y-b.y)*(a.y-b.y)));
@@ -258,20 +271,20 @@ public class Point{
 
     public static Point annealingAlgorithm(Point[] searchList, double[] dirList, double[] rList){
         ArrayList<Point> bestGuess = new ArrayList<Point>();
-        double minx = -20;
-        double miny = -10;
-        int xPoints = 500;
-        int yPoints = 500;
+        double minx = -40;
+        double miny = -20;
+        int xPoints = 1000;
+        int yPoints = 1000;
         Point[][] pointsList = fillPointsList(minx, miny, xPoints, yPoints);
 
         int interval = 2;
-        int samples = 50;
+        int samples = 500;
         Point startPoint = null;
 
         //set annealing constants
         double alpha = .9;
         int jmax = 5000;
-        double errormax = .0001;
+        double errormax = .01;
 
 
         //run this for some discretized amt of rotations

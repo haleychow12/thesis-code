@@ -132,7 +132,7 @@ def storeGuess(bestGuess, error, p, degree):
 
     #append if list is too short
     #errorList.append((error, p, degree))
-    #p.setError(error, degree)
+    p.setError(error, degree)
     count = len(bestGuess)
 
     if count < bestGuessLength:
@@ -187,26 +187,26 @@ def drawplot(tloc, searchx, searchy, pointsList, bestGuess):
 	    print count*5
 	    #test = Transmitter(1, location=np.array([xguess, yguess, 0]), theta=count*5)
 	    theta = count*5
-	    plot_field(tloc, theta, m, xlim = (-2, 2), ylim = (-1, 1), n = 100)
+	    plot_field(tloc, theta, m, xlim = (-20, 20), ylim = (-10, 10), n = 100)
 	    #draw search path
 	    for x,y in zip(searchx, searchy):    
 	        plt.annotate("x", (x, y))
 
 	    #draw the points with fontsize modulated by magnitude of the error
-	    # for p in pointsList:
-	    #     e,d = zip(*p.error)
-	    #     #x = min(e)
-	    #     x = e[count]
-	    #     if (x > 6):
-	    #         size = 30
-	    #     else: 
-	    #         size = (x * 5)
-	    #     plt.annotate(".", (p.x, p.y), fontsize = size)
+	    for p in pointsList:
+	        e,d = p.error
+	        #x = min(e)
+	        x = e#[count]
+	        if (x > 6):
+	            size = 30
+	        else: 
+	            size = (x * 5)
+	        plt.annotate(".", (p.x, p.y), fontsize = size)
 	        #print ("x: %.4f, y: %.4f, error: %.2f" % (p.x, p.y, x))
 
 	    #draws the top 4 guesses and places the source at their average
-	    for e,p,d in bestGuess:
-	        plt.annotate("*", (p.x, p.y))
+	    #for e,p,d in bestGuess:
+	    #    plt.annotate("*", (p.x, p.y))
 	    #plt.annotate("o", (xguess, yguess))
 
 	    plt.xlim([-2, 2])
@@ -218,12 +218,22 @@ def quickdrawplot(tloc, theta, bestGuess):
 	m = calc_magnetic_moment()
 	plot_field(tloc, theta, m, xlim = (-20, 20), ylim = (-10, 10), n = 1000)
 	#draws the top 4 guesses and places the source at their average
-	for e,p,d in bestGuess:
-	    plt.annotate("*", (p.x, p.y))
+	#for e,p,d in bestGuess:
+	#    plt.annotate("*", (p.x, p.y))
 	plt.annotate("o", (tloc[0], tloc[1]))
 	plt.xlim([-20, 20])
 	plt.ylim([-10, 10])
 	plt.show()
+
+def oldFillPointsList(xlim, ylim, xPoints, yPoints):
+	pointsList = []
+	pixelX = np.linspace(xlim[0], xlim[1], xPoints)
+	pixelY = np.linspace(ylim[0], ylim[1], yPoints)
+	for px in pixelX:
+		for py in pixelY:
+			pointsList.append(Point(px, py))
+
+	return pointsList
 
 def fillPointsList(xlim, ylim, xPoints, yPoints):
 	pointsList = []
@@ -338,7 +348,7 @@ def bruteforce_search(tloc, myloc, theta, radius = .3, stepsize = 0.1, steps = 5
 	slopeList = []
 	bestGuess = []
 
-	pointsList = fillPointsList(xlim = (-2,2), ylim = (-1,1), xPoints=100, yPoints=50)
+	pointsList = oldFillPointsList(xlim = (-2,2), ylim = (-1,1), xPoints=100, yPoints=50)
 	interval = 2
 	m = calc_magnetic_moment()
 
@@ -357,7 +367,7 @@ def bruteforce_search(tloc, myloc, theta, radius = .3, stepsize = 0.1, steps = 5
 
 			for p in pointsList:
 				#check if the point is on the wrong side of the line
-				del p.error[:]
+				#del p.error[:]
 				for degree in range(0, 180, interval):
 					#test = Transmitter(1, location=np.array([p.x, p.y, 0]), theta=degree)
 					testloc = np.array([p.x,p.y])
@@ -403,7 +413,7 @@ def tiered_search(tloc, myloc, theta, radius = .3, stepsize = 0.1, steps = 5, vi
 	slopeList = []
 	bestGuess = []
 
-	pointsList = fillPointsList(xlim =(-2,2), ylim =(-1,1), xPoints=80, yPoints=40)
+	pointsList = oldFillPointsList(xlim =(-2,2), ylim =(-1,1), xPoints=80, yPoints=40)
 	interval = 10
 	m = calc_magnetic_moment()
 
@@ -421,7 +431,6 @@ def tiered_search(tloc, myloc, theta, radius = .3, stepsize = 0.1, steps = 5, vi
 			slopeList.append(slope)
 
 			for p in pointsList:
-				del p.error[:]
 				for degree in range(0, 180, interval):
 					#test = Transmitter(1, location=np.array([p.x, p.y, 0]), theta=degree)
 					testloc = np.array([p.x,p.y])
@@ -503,7 +512,7 @@ def crawling_search(tloc, myloc, theta, radius = .3, stepsize = 0.2, steps = 7, 
 			slope = (y-searchy[i-1])/(x-searchx[i-1])
 			slopeList.append(slope)
 
-		if (i > 4): #for every step
+		if (i > 5): #for every step
 			del bestGuess[:]
 			for degree in range(0, 180, interval):
 				#errorList = np.zeros(len(pointsList)) 
@@ -523,6 +532,7 @@ def crawling_search(tloc, myloc, theta, radius = .3, stepsize = 0.2, steps = 7, 
 						(testslope, testr) = getTestVals(testloc, myloc=np.array([searchx[k], searchy[k]]), theta=degree, m=m)
 						error += math.sqrt((slopeList[k] - testslope)**2 + (r[k] - testr)**2)
 					pointsList[testxIndex][testyIndex].setError(error, degree)
+					#plt.annotate("g", (testPoint.x, testPoint.y), fontsize=10)
 
 					if (error < errormin):
 						errormin = error
@@ -531,13 +541,18 @@ def crawling_search(tloc, myloc, theta, radius = .3, stepsize = 0.2, steps = 7, 
 				newmin = sys.maxint
 				while (True): #some condition
 					#check bounds of the x and y
+					#print (crawlstart.x, crawlstart.y)
+
 					x = xList.tolist().index(crawlstart.x)
 					y = yList.tolist().index(crawlstart.y)
+			
+					#plt.annotate(".", (crawlstart.x,crawlstart.y), fontsize=15)
 
 					#compute the error at all the neighbors
 					neighbors = findNeighbors(x, y, pointsList)
 					for p in neighbors:
 						testloc = np.array([p.x,p.y])
+						#print testloc
 						e,d = p.error
 						if (d == degree):
 							error = e
@@ -548,7 +563,6 @@ def crawling_search(tloc, myloc, theta, radius = .3, stepsize = 0.2, steps = 7, 
 								(testslope, testr) = getTestVals(testloc, myloc=np.array([searchx[k], searchy[k]]), theta=degree, m=m)
 								error += math.sqrt((slopeList[k] - testslope)**2 + (r[k] - testr)**2)
 								#4*the slope part might help
-							p.setError(error, degree)
 							storeGuess(bestGuess, error, p, degree)
 						#store the values from neighbor with smallest error
 						if (error < newmin):
@@ -570,7 +584,7 @@ def crawling_search(tloc, myloc, theta, radius = .3, stepsize = 0.2, steps = 7, 
 
 	return findAvg(bestGuess, i)
 
-def annealing_search(tloc, myloc, theta, radius = .3, stepsize = .2, steps = 8, visualize = False):
+def annealing_search(tloc, myloc, theta, radius = .3, stepsize = 3, steps = 7, visualize = False):
 	searchx = []
 	searchy = []
 	r = []
@@ -593,14 +607,14 @@ def annealing_search(tloc, myloc, theta, radius = .3, stepsize = .2, steps = 8, 
 		searchy.append(y)
 		dist = distance(myloc, tloc)
 		r.append(dist)
-		#plt.annotate("x", (x,y))
+		plt.annotate("x", (x,y))
 
 		if (i > 0):
 			#solve for the slope
 			slope = (y-searchy[i-1])/(x-searchx[i-1])
 			slopeList.append(slope)
 
-		if (i > 6): #for every step
+		if (i > 5): #for every step
 			for degree in range(0, 180, interval):
 				#annealing parameters
 				#print degree
@@ -663,8 +677,6 @@ def annealing_search(tloc, myloc, theta, radius = .3, stepsize = .2, steps = 8, 
 						nexterror = math.sqrt(const*snorm(slopeerror) + dnorm(disterror))
 						#serrorList.append(slopeerror)
 						#derrorList.append(disterror)
-
-						nextPoint.setError(nexterror,degree)
 						storeGuess(bestGuess, nexterror, nextPoint, degree)
 
 					#print str(nextPoint.x) + "," + str(nextPoint.y) + ", error: " + str(nexterror)
@@ -721,15 +733,15 @@ iterations = 1
 for j in range(iterations):
 	#print xarray[j]
 	i = 0
-	trials = 1
+	trials = 100
 	avgDistance = np.zeros(trials) 
 	while (i < trials):
 		#set the beginning parameters
 
 		#Test for java x: -14.7067, y: 1.8595, theta: 66.12
-	    theta = 66.12#random.random()*180
-	    sourcex = -14.7067#random.random()*40 - 20
-	    sourcey = 1.8595#random.random()*20 - 10
+	    theta = random.random()*180
+	    sourcex = random.random()*40 - 20
+	    sourcey = random.random()*20 - 10
 
 	    # Define a transmitter
 	    tloc = np.array([sourcex, sourcey])
@@ -745,7 +757,7 @@ for j in range(iterations):
 
 	    # Perform a search
 	    xguess, yguess = annealing_search(tloc, myloc=myloc, theta=theta)
-	    
+
 	    #redo iteration if not enough steps
 	    if (xguess == 3 and yguess == 3):
 	        print("redoing iteration") #if error is too large, might want to add additional step?
