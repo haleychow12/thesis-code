@@ -12,3 +12,111 @@ def normalizeplot():
 	plt.ylabel("Average Distance (m) over 1000 iterations")
 	plt.title("Avg Distance vs. C-value")
 	plt.show()
+
+def annealingpointplot():
+	distarray = np.array([1.5568130811614784, 0.8664445995503962, 0.5466074874812259, 
+		0.43759875456500497, 0.7262531298210958, 0.3633602833160823, 0.4247199269436295,
+		0.44985342711023496, 0.7996463940386136])
+	pointarray = np.array([200,300,400,500,600,700,800,900,1000])
+
+	plt.scatter(pointarray, distarray)
+	plt.xlabel("Sqrt of Number of Points in a 40x20m space")
+	plt.ylabel("Average Distance (m) over 1000 iterations")
+	plt.title("Avg Distance vs. Discretizations")
+	plt.show()
+
+def bruteforcepointplot():
+	distarray = np.array([1.0490731255690808, 0.2868699677115341,0.7847167956003552,
+		0.5090047579385661, 0.4338989317297768, 1.0695222784034604, 0.3943511211157416, 
+		0.49027651712878617])
+	pointarray = np.array([100, 150, 200, 250, 300, 350, 400, 450])
+	plt.scatter(pointarray, distarray)
+	plt.xlabel("Sqrt of Number of Points in a 40x20m space")
+	plt.ylabel("Average Distance (m) over 1000 iterations")
+	plt.title("Avg Distance vs. Discretizations")
+	plt.show()
+
+def rotationsplot():
+	rotarray = np.array([0.6472947176340353, 0.5321731186996693, 0.3805796292199622, 
+		1.9820030444451475, 1.2359109188293091, 0.726197216252072, 0.6725160916140589, 
+		0.6757754814770371, 2.290245000658923, 2.1788106476626714, 0.7158047933181002, 
+		1.8519248966867128,2.9942916011908687, 2.5285449703394836, 0.8971351081944612,
+		2.8047806101746646, 1.129259950240427, 6.5741545859669825, 2.155533578379347,
+		3.8899091867937274])
+	degreesarray = np.array([1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20])
+
+	plt.scatter(degreesarray, rotarray)
+	plt.xlabel("Degrees rotated in sourcefinding algorithm")
+	plt.ylabel("Average Distance (m) over 1000 iterations")
+	plt.title("Avg Distance vs. Degrees Rotated")
+	plt.show()
+
+
+def gridsizeplot():
+	distarray = np.array([0.02864013142685773, 0.13100280159523314, 0.5409887515373091, 
+		0.04246991528048456, 0.708558081735533, 1.557568135607043, 0.4239512951569565,
+		0.8007355037738371, 0.9852573220790021, 2.391578353748273])
+
+	gridarray = np.array([12.5, 50, 112.5, 200, 312.5, 450, 612.5, 800, 1012.5, 1250])
+
+	plt.scatter(gridarray, distarray)
+	plt.xlabel("Size of the grid in $m^2$")
+	plt.ylabel("Average Distance (m) over 1000 iterations")
+	plt.title("Avg Distance vs. Grid Size")
+	plt.show()
+
+def searchpointplot():
+	distarray = np.array([1.8593945408448231, 1.5377569292356876, 0.6456749307646229, 
+		0.8847845414420522, 0.6182640546501242, 0.7183791690773876,
+		1.1797151756586173, 0.9268789490238852, 3.827319382386541, 
+		2.263185478200672, 0.8287542130056426, 0.7774521478496412, 
+		0.7828024989835096, 1.4812820647573666, 0.21308044148785285,  0.1906883025004237])
+
+	gridarray = np.array([3,4,5,6,7,8,9,10,3,4,5,6,7,8,9,10])
+	plt.scatter(gridarray, distarray)
+	plt.xlabel("Number of steps taken")
+	plt.ylabel("Average Distance (m) over 1000 iterations")
+	plt.title("Avg Distance vs. Steps")
+	plt.show()
+
+def timingplot():
+	timearray = np.array([77.33333333333333, 62.166666666666664, 71.0, 108.83333333333333, 
+		97.08333333333333, 96.08333333333333, 107.5, 111.66666666666667, 127.75, 
+		141.41666666666666, 166.0, 184.08333333333334])
+	jmaxarray = np.array([1000,1500, 2000, 2500, 3000, 3500, 4000, 4500, 5000, 6000, 7000, 7500])
+
+	plt.scatter(jmaxarray, timearray)
+	plt.xlabel("Max number of iterations in Simulated Annealing Algorithm")
+	plt.ylabel("Avg time per trial (ms)")
+	plt.title("Timing vs. Iterations")
+	plt.show()
+
+def timingaccuracyplot():
+	distarray = np.array([1.0388231237123806, 0.8821156829416938,0.8082858293641472,
+		1.452015601903087, 0.9346785039286972, 1.0133360821225286, 0.5619610203842603,
+		0.6030816342643603, 0.48279185845911393, 0.6862666971794217, 2.4703640439240218,
+		0.693688317104088, 1.2666580117897772, 0.496386194763407])
+
+
+	timearray = np.array([77.21428571428571, 54.214285714285715, 55.07142857142857, 
+		68.78571428571429, 82.64285714285714, 88.35714285714286, 91.14285714285714, 
+		103.35714285714286, 104.07142857142857, 118.28571428571429, 124.14285714285714, 
+		137.35714285714286, 154.07142857142858, 183.78571428571428])
+
+	dist2array = np.array([7.576252662828103, 4.503885041897887, 4.955224425725192,
+		4.102478723821926, 2.2374597166421757, 2.071117816444269, 1.0364926372093175, 
+		2.8977968970163754, 1.1587254753675482, 1.6889536429806375, 1.1904248740022743,
+		0.8317559974021907])
+
+	time2array = np.array([72.83333333333333, 69.5, 73.75, 
+		119.16666666666667, 160.83333333333334,207.25, 239.08333333333334, 
+		300.4166666666667, 331.5, 372.4166666666667, 369.75, 497.8333333333333])
+
+	plt.scatter(timearray, distarray)
+	plt.scatter(time2array, dist2array, color='red')
+	plt.xlabel("Avg time per trial (ms)")
+	plt.ylabel("Avg Distance(m) over 1000 Iterations")
+	plt.title("Bruteforce vs. Simulated Annealing Algorithm")
+	plt.show()
+
+timingaccuracyplot()

@@ -219,7 +219,7 @@ public class Point{
         double avgx = 0;
         double avgy = 0;
 
-        double errorThreshold = .75; //really need to change this, like 3?
+        double errorThreshold = 2; //really need to change this, like 3?
         Point ret;
 
         for (Point p: bestGuess){
@@ -241,7 +241,7 @@ public class Point{
     //calculate the error with a transmitter at testPoint oriented in the direction theta
     //degrees
     private static double calcError(double theta, Point testPoint, Point[] searchList, double[] dirList, double[] rList){
-        int NUMVALS = 7; //only test the last 7 values
+        int NUMVALS = 10; //only test the last 10 values
         int SLOPE_MULTIPLIER = 2; //multiplier for the direciton difference
 
         double slopeError = 0;
@@ -269,14 +269,14 @@ public class Point{
     }
 
     public static Point fillSearchArrays(int steps, Point[] searchList, double[] dirList, double[] rList){
-        //searchlist and rlist will have one more value than slopelist
+        //searchList and rlist will have one more value than slopelist
         //x: -14.7067, y: 1.8595, theta: 66.12
         double theta = Math.random()*180;
         double sourcex = Math.random()*40-20;
         double sourcey = Math.random()*20-10;
 
         Point tloc = new Point(sourcex, sourcey);
-        Point myloc = new Point(15, -7.5);
+        Point myloc = new Point(0,0);
         double stepsize = .2;
 
         //System.out.println(String.format("x: %.4f, y: %.4f, theta: %.2f", sourcex, sourcey, theta));
@@ -295,14 +295,38 @@ public class Point{
         // for (int i = 0; i < dirList.length; i++){
         //     System.out.println(String.format("dirlist[%d]: %.4f", i, dirList[i]));
         //     System.out.println(String.format("rlist[%d]: %.4f", i, rList[i]));
-        //     System.out.println(String.format("searchlist[%d]: %.4f,%.4f", i, searchList[i].x, searchList[i].y));
+        //     System.out.println(String.format("searchList[%d]: %.4f,%.4f", i, searchList[i].x, searchList[i].y));
         // }
 
         return tloc;
 
     }
 
-    public static Point annealingAlgorithm(Point[] searchList, double[] dirList, double[] rList){
+    public static Point bruteforceAlgorithm(Point[] searchList, double[] dirList, double[] rList, int pVals){
+        ArrayList<Point> bestGuess = new ArrayList<Point>();
+        double minx = -20;
+        double miny = -10;
+        int xPoints = pVals;//200;
+        int yPoints = pVals;//200;
+        Point[][] pointsList = fillPointsList(minx, miny, xPoints, yPoints);
+
+        int interval = 5;
+
+        for (int i = 0; i < xPoints; i++){
+            for (int j = 0; j < yPoints; j++){
+                Point p = pointsList[i][j];
+                for (int degree = 0; degree < 180; degree += interval){
+                    double error = calcError(degree, p, searchList, dirList, rList);
+                    storeGuess(bestGuess, error, p, degree);
+                }
+            }
+        }
+
+        return findAvg(bestGuess);
+
+    }
+
+    public static Point annealingAlgorithm(Point[] searchList, double[] dirList, double[] rList, int iterations){
         ArrayList<Point> bestGuess = new ArrayList<Point>();
         double minx = -20; //minx, miny = -40,20
         double miny = -10;
@@ -310,13 +334,13 @@ public class Point{
         int yPoints = 500;
         Point[][] pointsList = fillPointsList(minx, miny, xPoints, yPoints);
 
-        int interval = 2;
-        int samples = 50; //500 samples
+        int interval = 5; //2
+        int samples = 500; //500 samples
         Point startPoint = null;
 
         //set annealing constants
         double alpha = .9;
-        int jmax = 6000;
+        int jmax = iterations;//5000; //6000 is pretty good 
         double errormax = .01;
 
 
@@ -404,18 +428,18 @@ public class Point{
     }
 
     public static void main(String args[]){
-        int iterations = 1;
-        /*double[] xarray = new double[iterations];
-        double start = .0625;
-        double estepsize = 2;
+        int iterations = 12;
+        int[] xarray = {8000, 8250, 8500, 8750, 9000, 9250, 9500, 10000};//new int[iterations];
+        //int start = 100;
+        //int add = 50;
         for (int x = 0; x < iterations; x++){
-            xarray[x] = start;
-            //System.out.println(Double.toString(start));
-            start *= estepsize; 
-        }*/
+            xarray[x] = (int) Math.sqrt(xarray[x]);
+            System.out.println(Integer.toString(xarray[x]));
+        }
 
-        int trials = 1000;
+        int trials = 500;
         double[] avgDistance = new double[trials];
+        double[] avgTime = new double[trials];
         int steps = 7;
         Point[] searchList = new Point[steps];
         double[] rList = new double[steps];
@@ -423,27 +447,34 @@ public class Point{
 
 
         for (int j = 0; j < iterations; j++){
-            //System.out.println(Double.toString(xarray[j]));
+            System.out.println(Double.toString(xarray[j]));
             int i = 0;
             while (i < trials){
-                Point tloc = fillSearchArrays(steps, searchList, dirList, rList);
-                Point sourceGuess = annealingAlgorithm(searchList, dirList, rList);
+                long startTime = System.nanoTime();
+                Point tloc = fillSearchArrays(steps, searchList, dirList, rList, xarray[j]);
+                Point sourceGuess = bruteforceAlgorithm(searchList, dirList, rList);
 
                 if (sourceGuess == null)
                     continue;
                 //System.out.println(String.format("Source: %.4f, %.4f", 
-                //    sourceGuess.x, sourceGuess.y));
+                //   sourceGuess.x, sourceGuess.y));
 
                 avgDistance[i] = distance(tloc, sourceGuess);
                 //System.out.println(String.format("Dist: %.4f", avgDistance[i]));
+                long elapsedTime = System.nanoTime()-startTime;
+                avgTime[i] = elapsedTime/(1000000); //in miliseconds
                 i++;
+                
             }
 
             double sum = 0.0;
+            double distsum = 0.0;
             for (i = 0; i < iterations; i++){
-                sum += avgDistance[i];
+                distsum += avgDistance[i];
+                sum += avgTime[i];
             }
-            System.out.println("Avg Distance: " + Double.toString(sum/iterations));
+            System.out.println("Avg Dist: " + Double.toString(distsum/iterations));
+            System.out.println("Avg Time: " + Double.toString(sum/iterations));
         }
 
 
