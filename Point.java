@@ -428,14 +428,14 @@ public class Point{
     }
 
     public static void main(String args[]){
-        int iterations = 12;
-        int[] xarray = {8000, 8250, 8500, 8750, 9000, 9250, 9500, 10000};//new int[iterations];
+        int iterations = 1;
+        int[] xarray = {18000};//new int[iterations];
         //int start = 100;
         //int add = 50;
-        for (int x = 0; x < iterations; x++){
+        /*for (int x = 0; x < iterations; x++){
             xarray[x] = (int) Math.sqrt(xarray[x]);
             System.out.println(Integer.toString(xarray[x]));
-        }
+        }*/
 
         int trials = 500;
         double[] avgDistance = new double[trials];
@@ -451,8 +451,8 @@ public class Point{
             int i = 0;
             while (i < trials){
                 long startTime = System.nanoTime();
-                Point tloc = fillSearchArrays(steps, searchList, dirList, rList, xarray[j]);
-                Point sourceGuess = bruteforceAlgorithm(searchList, dirList, rList);
+                Point tloc = fillSearchArrays(steps, searchList, dirList, rList);
+                Point sourceGuess = annealingAlgorithm(searchList, dirList, rList, xarray[j]);
 
                 if (sourceGuess == null)
                     continue;
