@@ -240,17 +240,16 @@ public class Point{
 
     //calculate the error with a transmitter at testPoint oriented in the direction theta
     //degrees
-    private static double calcError(double theta, Point testPoint, Point[] searchList, 
-        double[] dirList, double[] rList){
+    private static double calcError(double theta, Point testPoint, Point[] searchList, double[] dirList, double[] rList){
         int NUMVALS = 7; //only test the last 7 values
-        int SLOPE_MULTIPLIER = 16; //multiplier for the direciton difference
+        int SLOPE_MULTIPLIER = 2; //multiplier for the direciton difference
 
         double slopeError = 0;
         double distError = 0;
 
         double[] testResults = new double[2];
 
-        int length = searchList.length;
+        int length = dirList.length;
         if (length < NUMVALS)
             NUMVALS = length;
 
@@ -269,21 +268,55 @@ public class Point{
         return Math.sqrt(SLOPE_MULTIPLIER*snorm(slopeError) + dnorm(distError));
     }
 
+    public static Point fillSearchArrays(int steps, Point[] searchList, double[] dirList, double[] rList){
+        //searchlist and rlist will have one more value than slopelist
+        //x: -14.7067, y: 1.8595, theta: 66.12
+        double theta = Math.random()*180;
+        double sourcex = Math.random()*40-20;
+        double sourcey = Math.random()*20-10;
+
+        Point tloc = new Point(sourcex, sourcey);
+        Point myloc = new Point(15, -7.5);
+        double stepsize = .2;
+
+        //System.out.println(String.format("x: %.4f, y: %.4f, theta: %.2f", sourcex, sourcey, theta));
+
+
+        for (int i = 0; i < steps; i++){
+            searchList[i] = myloc;
+            rList[i] = distance(myloc, tloc);
+            if (i > 0){
+                dirList[i-1] = (myloc.y-searchList[i-1].y)/
+                (myloc.x-searchList[i-1].x);
+            }
+            myloc = step(tloc, myloc, theta, stepsize);
+
+        }
+        // for (int i = 0; i < dirList.length; i++){
+        //     System.out.println(String.format("dirlist[%d]: %.4f", i, dirList[i]));
+        //     System.out.println(String.format("rlist[%d]: %.4f", i, rList[i]));
+        //     System.out.println(String.format("searchlist[%d]: %.4f,%.4f", i, searchList[i].x, searchList[i].y));
+        // }
+
+        return tloc;
+
+    }
+
     public static Point annealingAlgorithm(Point[] searchList, double[] dirList, double[] rList){
         ArrayList<Point> bestGuess = new ArrayList<Point>();
-        double minx = -40;
-        double miny = -20;
-        int xPoints = 1000;
-        int yPoints = 1000;
+        double minx = -20; //minx, miny = -40,20
+        double miny = -10;
+        int xPoints = 500;//xpoints, ypoints: 1000,1000
+        int yPoints = 500;
         Point[][] pointsList = fillPointsList(minx, miny, xPoints, yPoints);
 
         int interval = 2;
-        int samples = 500;
+        int samples = 50; //500 samples
         Point startPoint = null;
 
         //set annealing constants
         double alpha = .9;
-        int jmax = 5000;
+        int jmax = 6000;
         double errormax = .01;
 
 
@@ -360,80 +393,59 @@ public class Point{
                 j+=1;
             }
         }
-        for (int i = 0; i < bestGuess.size(); i++){
+        //print BestGuess array
+        /*for (int i = 0; i < bestGuess.size(); i++){
             System.out.println(String.format("Guess: %.4f, %.4f, Error: %.4f, Degree: %d", 
             bestGuess.get(i).x, bestGuess.get(i).y, bestGuess.get(i).e, bestGuess.get(i).d));
 
-        }
+        }*/
         return findAvg(bestGuess);
 
     }
 
     public static void main(String args[]){
-        //System.out.println(Double.toString(snorm(10)));
-        //System.out.println(Double.toString(dnorm(7)));
+        int iterations = 1;
+        /*double[] xarray = new double[iterations];
+        double start = .0625;
+        double estepsize = 2;
+        for (int x = 0; x < iterations; x++){
+            xarray[x] = start;
+            //System.out.println(Double.toString(start));
+            start *= estepsize; 
+        }*/
 
-        Point[] searchList = {new Point(15.0, -7.5),
-            new Point(14.9666518861, -7.3027998395),
-            new Point(14.9316034054, -7.10589477608),
-            new Point(14.8948381785, -6.90930287792),
-            new Point(14.8563825119, -6.71303479161),
-            new Point(14.8162254863, -6.51710773044),
-            new Point(14.7743985392, -6.32153107823)};
-
-        double[] dirList = {-5.91338272621, -5.61807699865,-5.34962183837,
-            -5.1044730899,-4.87968382989, -4.67278364413, -4.4816860498};
-
-        double[] rList = {31.146239984, 31.055684673, 30.9646141949, 30.8730280491,
-            30.7809257092, 30.688306624, 30.5951702165};
-
-        Point source = annealingAlgorithm(searchList, dirList, rList);
-        System.out.println(String.format("Source: %.4f, %.4f", 
-            source.x, source.y, source.e));
+        int trials = 1000;
+        double[] avgDistance = new double[trials];
+        int steps = 7;
+        Point[] searchList = new Point[steps];
+        double[] rList = new double[steps];
+        double[] dirList = new double[steps-1];
 
 
-        // double e = calcError(80, new Point(5, 2), searchList, dirList, rList);
-        // System.out.println(Double.toString(e));
-        // Point [][] pointsList = fillPointsList(-20, -10, 500, 500);
-        // Point startPoint = new Point(19.92, 9.56);
-        // int x = (int) ((startPoint.x+20)/incX);
-        // int y = (int) ((startPoint.y+10)/incY);
-        // System.out.println(Integer.toString(x));
-        // System.out.println(Integer.toString(y));
+        for (int j = 0; j < iterations; j++){
+            //System.out.println(Double.toString(xarray[j]));
+            int i = 0;
+            while (i < trials){
+                Point tloc = fillSearchArrays(steps, searchList, dirList, rList);
+                Point sourceGuess = annealingAlgorithm(searchList, dirList, rList);
 
-        // System.out.println(Double.toString(pointsList[x][y].x) + ","
-        //           + Double.toString(pointsList[x][y].y));
+                if (sourceGuess == null)
+                    continue;
+                //System.out.println(String.format("Source: %.4f, %.4f", 
+                //    sourceGuess.x, sourceGuess.y));
 
-        // findRandomNeighbor(x,y, pointsList);
+                avgDistance[i] = distance(tloc, sourceGuess);
+                //System.out.println(String.format("Dist: %.4f", avgDistance[i]));
+                i++;
+            }
 
-        // ArrayList <Point> bestGuess = new ArrayList<Point>();
-        // storeGuess(bestGuess, .1, new Point(15, 12), 30);
-        // storeGuess(bestGuess, .5, new Point(10, 12), 30);
-        // storeGuess(bestGuess, .7, new Point(13, 12), 30);
-        // storeGuess(bestGuess, .2, new Point(11, 12), 30);
-        // storeGuess(bestGuess, .3, new Point(14, 12), 30);
-        // storeGuess(bestGuess, .03, new Point(17, 12), 30);
+            double sum = 0.0;
+            for (i = 0; i < iterations; i++){
+                sum += avgDistance[i];
+            }
+            System.out.println("Avg Distance: " + Double.toString(sum/iterations));
+        }
 
-        // for (int i = 0; i < bestGuess.size(); i++){
-        //     System.out.println(Double.toString(bestGuess.get(i).x) + "," + Double.toString(bestGuess.get(i).y));
-        // }
 
-        // for (int i = 0; i < 500; i++){
-        //     for (int j = 0; j < 500; j++){
-        //         System.out.println(Double.toString(pointsList[i][j].x) + ","
-        //          + Double.toString(pointsList[i][j].y));
-        //     }
-
-        // }
-
-        //double[] results = new double[2];
-
-        //field(new Point(0,1), new Point(5,2), 45, results);
-        //double[] results = new double[2];
-        // Point one = rotate(3.0,6.0, (Math.PI/4));
-        // System.out.println(Double.toString(one.x) + "," + Double.toString(one.y));
-
-        // Point two = rotate_point(4.0,6.0,1.0,1.0,(Math.PI/3));
-        // System.out.println(Double.toString(two.x) + "," + Double.toString(two.y));
     }
 }
