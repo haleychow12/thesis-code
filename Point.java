@@ -219,7 +219,7 @@ public class Point{
         double avgx = 0;
         double avgy = 0;
 
-        double errorThreshold = 2; //really need to change this, like 3?
+        double errorThreshold = .75; //really need to change this, like 3?
         Point ret;
 
         for (Point p: bestGuess){
@@ -240,9 +240,9 @@ public class Point{
 
     //calculate the error with a transmitter at testPoint oriented in the direction theta
     //degrees
-    private static double calcError(double theta, Point testPoint, Point[] searchList, double[] dirList, double[] rList){
-        int NUMVALS = 10; //only test the last 10 values
-        int SLOPE_MULTIPLIER = 2; //multiplier for the direciton difference
+    private static double calcError(double theta, Point testPoint, Point[] searchList, double[] dirList, double[] rList, double c){
+        int NUMVALS = 20; //only test the last 10 values
+        double SLOPE_MULTIPLIER = c;//2; //multiplier for the direciton difference
 
         double slopeError = 0;
         double distError = 0;
@@ -302,12 +302,12 @@ public class Point{
 
     }
 
-    public static Point bruteforceAlgorithm(Point[] searchList, double[] dirList, double[] rList, int pVals){
+    public static Point bruteforceAlgorithm(Point[] searchList, double[] dirList, double[] rList){
         ArrayList<Point> bestGuess = new ArrayList<Point>();
         double minx = -20;
         double miny = -10;
-        int xPoints = pVals;//200;
-        int yPoints = pVals;//200;
+        int xPoints = 200;
+        int yPoints = 200;
         Point[][] pointsList = fillPointsList(minx, miny, xPoints, yPoints);
 
         int interval = 5;
@@ -316,7 +316,7 @@ public class Point{
             for (int j = 0; j < yPoints; j++){
                 Point p = pointsList[i][j];
                 for (int degree = 0; degree < 180; degree += interval){
-                    double error = calcError(degree, p, searchList, dirList, rList);
+                    double error = calcError(degree, p, searchList, dirList, rList, 0.0);
                     storeGuess(bestGuess, error, p, degree);
                 }
             }
@@ -326,7 +326,7 @@ public class Point{
 
     }
 
-    public static Point annealingAlgorithm(Point[] searchList, double[] dirList, double[] rList, int iterations){
+    public static Point annealingAlgorithm(Point[] searchList, double[] dirList, double[] rList, double c){
         ArrayList<Point> bestGuess = new ArrayList<Point>();
         double minx = -20; //minx, miny = -40,20
         double miny = -10;
@@ -340,7 +340,7 @@ public class Point{
 
         //set annealing constants
         double alpha = .9;
-        int jmax = iterations;//5000; //6000 is pretty good 
+        int jmax = 5000; //6000 is pretty good 
         double errormax = .01;
 
 
@@ -357,7 +357,7 @@ public class Point{
                 int testyIndex = (int) (Math.random()*yPoints);
                 Point testPoint = pointsList[testxIndex][testyIndex];
 
-                olderror = calcError(degree, testPoint, searchList, dirList, rList);
+                olderror = calcError(degree, testPoint, searchList, dirList, rList, c);
                 pointsList[testxIndex][testyIndex].setError(olderror, degree);
 
                 //switch out values if olderror is less than current min
@@ -385,7 +385,7 @@ public class Point{
                     nexterror = nextPoint.e;
                 else {
                     //calculate error
-                    nexterror = calcError(degree, nextPoint, searchList, dirList, rList);
+                    nexterror = calcError(degree, nextPoint, searchList, dirList, rList, c);
                     nextPoint.setError(nexterror, degree);
                     storeGuess(bestGuess, nexterror, nextPoint, degree);
                 }
@@ -428,8 +428,9 @@ public class Point{
     }
 
     public static void main(String args[]){
-        int iterations = 1;
-        int[] xarray = {18000};//new int[iterations];
+        int iterations = 20;
+        double[] xarray = {.0625,.1,.125,.15,.2,.25,.3,.35,.4,.45,.5,.75,1,2,4,6,8,10,12,16};//new int[iterations];
+        double[] totDistance = new double[iterations];
         //int start = 100;
         //int add = 50;
         /*for (int x = 0; x < iterations; x++){
@@ -437,7 +438,7 @@ public class Point{
             System.out.println(Integer.toString(xarray[x]));
         }*/
 
-        int trials = 500;
+        int trials = 1000;
         double[] avgDistance = new double[trials];
         double[] avgTime = new double[trials];
         int steps = 7;
@@ -473,10 +474,17 @@ public class Point{
                 distsum += avgDistance[i];
                 sum += avgTime[i];
             }
+            totDistance[j] = distsum/iterations;
             System.out.println("Avg Dist: " + Double.toString(distsum/iterations));
             System.out.println("Avg Time: " + Double.toString(sum/iterations));
         }
 
+        for (int k = 0; k < iterations; k++){
+            System.out.println(Double.toString(totDistance[k]) + ",");
+        }
 
     }
+
+
+
 }
